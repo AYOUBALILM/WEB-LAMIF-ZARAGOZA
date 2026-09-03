@@ -1463,13 +1463,13 @@ section { position: relative; }
 
 .schedule { display: flex; flex-direction: column; gap: 0.22rem; }
 .schedule-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 0.75rem;
     font-size: 0.84rem;
     color: var(--muted);
 }
-.schedule-row span:last-child { color: var(--text); white-space: nowrap; }
+.schedule-row span:last-child { color: var(--text); white-space: nowrap; text-align: right; }
 
 .loc-cta { grid-column: 1 / -1; justify-self: start; margin-top: 0.3rem; }
 
