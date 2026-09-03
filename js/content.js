@@ -176,9 +176,9 @@ window.LaMIF_CONTENT = {
     },
 
     pedido: {
-        eyebrow: 'Tu próxima comida está aquí',
+        eyebrow: '¿YA TE HA ENTRADO HAMBRE?',
         titulo: 'PIDE AHORA',
-        texto: 'Elige tu plataforma y lo preparamos al momento. Para llevar o a domicilio en Zaragoza.',
+        texto: 'Pide ahora. Lo preparamos al momento.',
         opciones: [
             { etiqueta: 'Glovo', tipo: 'glovo' },
             { etiqueta: 'Uber Eats', tipo: 'ubereats' },

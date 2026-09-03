@@ -666,7 +666,7 @@
 
             const targets = $$(
                 '.section-head, .featured-copy, .featured-media, .volcano-copy, .volcano-media, .about-copy, .about-media, .about-stats, ' +
-                '.showcase-item, .reviews-summary, .review-card, .order-panel, .location-card, .location-map, .menu-card, .burger-rail-card, .tacos-copy, .tacos-media, .cta-band-inner'
+                '.showcase-item, .reviews-summary, .review-card, .order-panel, .location-card, .location-map, .menu-card, .burger-rail-card, .tacos-copy, .tacos-media'
             );
             targets.forEach(function (el, i) {
                 if (el.classList.contains('menu-card') || el.classList.contains('review-card') || el.classList.contains('location-card')) {

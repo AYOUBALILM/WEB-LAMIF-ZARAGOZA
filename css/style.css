@@ -872,27 +872,6 @@ button { font-family: inherit; }
 }
 
 /* ---------- CTA band — conversión agresiva ---------- */
-.cta-band {
-    padding: clamp(3.5rem, 7vw, 5.5rem) 0;
-    background: var(--ink-2);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    text-align: center;
-}
-.cta-band-title {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(2.6rem, 6vw, 4.2rem);
-    line-height: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 0.015em;
-    color: var(--text);
-    margin-bottom: 0.6rem;
-}
-.cta-band-sub { color: var(--muted); font-size: 1.05rem; margin-bottom: 1.6rem; }
-.cta-band-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
-.cta-band-ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
-.cta-band-ghost:hover { border-color: var(--brand); color: var(--brand); background: rgba(255,122,0,0.06); }
 
 /* ---------- Marquee ---------- */
 .marquee {
@@ -2043,9 +2022,6 @@ section { position: relative; }
     /* ---------- Seal + CTA — móvil ---------- */
     .seal-strip-inner { flex-direction: column; gap: 0.35rem; }
     .seal-claim { font-size: 0.74rem; }
-    .cta-band-title { font-size: clamp(2rem, 9vw, 3rem); }
-    .cta-band-actions { flex-direction: column; }
-    .cta-band-actions .btn { width: 100%; }
 
     /* ---------- Carta ---------- */
     .menu-filter {
