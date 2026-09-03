@@ -7,10 +7,36 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/admin.css">
+    <style>
+        #loginView { display: none; }
+        #loginView.active { display: flex; }
+        #appView { display: none; }
+        #appView.active { display: block; }
+    </style>
 </head>
 <body>
 
-    <!-- ======== APP ======== -->
+    <!-- ======== LOGIN ======== -->
+    <div class="login-view active" id="loginView">
+        <form class="login-box" id="loginForm">
+            <div class="login-brand">
+                <span class="brand-mark">★</span> LA <em>MIF</em>
+            </div>
+            <h1>Panel de administración</h1>
+            <div class="field">
+                <label for="loginUser">Usuario</label>
+                <input type="text" id="loginUser" autocomplete="username" required>
+            </div>
+            <div class="field">
+                <label for="loginPass">Contraseña</label>
+                <input type="password" id="loginPass" autocomplete="current-password" required>
+            </div>
+            <div id="loginError" style="color:#e74c3c;display:none"></div>
+            <button type="submit" class="btn btn-primary" id="loginBtn">Entrar</button>
+        </form>
+    </div>
+
+    <!-- ======== APP (admin panel) ======== -->
     <div class="app" id="appView">
         <header class="topbar">
             <div class="topbar-brand">
@@ -49,7 +75,7 @@
                 <button class="btn btn-primary" id="btnSave" type="button">Guardar cambios</button>
                 <input type="file" id="restoreFile" accept="application/json" hidden>
             </div>
-            <p class="savebar-note">Clave de admin configurable en <code>js/admin.js</code> y <code>netlify/functions/content.mjs</code>.</p>
+            <p class="savebar-note">La contraseña se configura en las variables de entorno de Netlify.</p>
         </footer>
     </div>
 

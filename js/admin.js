@@ -2,22 +2,21 @@
 // LA MIF — Panel de administración
 // Edita textos, precios, imágenes y estructura
 // y publica al instante vía /api/content.
+// Autenticación por sesión server-side (cookie HttpOnly).
 // ========================================
 
 (function () {
     'use strict';
 
-// Sin contraseña de acceso. La clave ADMIN_KEY protege el guardado
-    // y debe coincidir con LAMIF_ADMIN_TOKEN en Netlify.
-    var ADMIN_KEY = 'lamif2026';
     var API_URL = '/api/content';
-    var SESSION_KEY = 'lmif_admin';
+    var AUTH_URL = '/api/auth';
 
     var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
     var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
     var DEFAULT_CONTENT = window.LaMIF_CONTENT || {};
     var content = null;
+    var isLoggedIn = false;
 
     // ---------------------------------------------------------------
     // HELPERS
@@ -79,7 +78,7 @@
                 { label: 'Apple Maps — cómo llegar', path: 'general.mapsAppleUrl', type: 'url' },
                 { label: 'Waze — cómo llegar', path: 'general.wazeUrl', type: 'url' },
                 { label: 'Google Maps embebido (enlace completo del iframe)', path: 'general.mapsEmbed', type: 'textarea', hint: 'Pégalo completo, incluyendo https://www.google.com/maps/embed?…' },
-                { label: 'URL de tus reseñas de Google (botón “Ver todas”)', path: 'resenas.goUrl', type: 'textarea' }
+                { label: 'URL de tus reseñas de Google (botón "Ver todas")', path: 'resenas.goUrl', type: 'textarea' }
             ]
         },
         {
@@ -93,7 +92,7 @@
         },
         {
             id: 'portada', label: 'Portada (inicio)',
-            hint: 'La imagen de fondo y todos los textos del inicio. La nueva jerarquía usa subtítulo + trust.',
+            hint: 'La imagen de fondo y todos los textos del inicio.',
             fields: [
                 IMG('hero', 'hero.imagen', 'Imagen de fondo del inicio'),
                 { label: 'Texto alternativo de la portada', path: 'hero.imagenAlt', type: 'text' },
@@ -119,13 +118,13 @@
         },
         {
             id: 'volcano', label: 'Producto estrella',
-            hint: 'El Volcano — la burger que todos vienen a probar. Se muestra justo después del hero.',
+            hint: 'El Volcano — la burger que todos vienen a probar.',
             fields: [
                 IMG('volcano', 'volcano.imagen', 'Foto del Volcano'),
                 { label: 'Texto alternativo', path: 'volcano.imagenAlt', type: 'text' },
                 { label: 'Eyebrow', path: 'volcano.eyebrow', type: 'text' },
                 { label: 'Título', path: 'volcano.titulo', type: 'text' },
-                { label: 'Subtítulo — Cuando el queso...', path: 'volcano.subtitulo', type: 'text' },
+                { label: 'Subtítulo', path: 'volcano.subtitulo', type: 'text' },
                 { label: 'Descripción', path: 'volcano.texto', type: 'textarea' },
                 { label: 'Precio solo (€)', path: 'volcano.precioSolo', type: 'text' },
                 { label: 'Precio menú (€)', path: 'volcano.precioMenu', type: 'text' },
@@ -136,7 +135,7 @@
         },
         {
             id: 'especialidad', label: 'Especialidad',
-            hint: 'La gran sección de la casa (campaña).',
+            hint: 'La gran sección de la casa.',
             fields: [
                 IMG('esp', 'especialidad.imagen', 'Foto de la especialidad'),
                 { label: 'Texto alternativo de la imagen', path: 'especialidad.imagenAlt', type: 'text' },
@@ -175,13 +174,13 @@
         },
         {
             id: 'carta', label: 'Carta',
-            hint: 'Textos de la carta y su estructura completa. Los precios se muestran como “solo” y como “menú”.',
+            hint: 'Textos de la carta y su estructura completa.',
             fields: [
                 { label: 'Etiqueta superior', path: 'menu.eyebrow', type: 'text' },
                 { label: 'Título — parte 1', path: 'menu.titulo1', type: 'text' },
                 { label: 'Título — parte 2', path: 'menu.titulo2', type: 'text' },
                 { label: 'Introducción', path: 'menu.intro', type: 'textarea' },
-                { label: 'Nota general (cuando se ve “Todos”)', path: 'menu.notaGeneral', type: 'textarea' },
+                { label: 'Nota general (cuando se ve "Todos")', path: 'menu.notaGeneral', type: 'textarea' },
                 { label: 'Texto del pie de carta', path: 'menu.ctaTexto', type: 'text' },
                 IMG('m1', 'menu.muestra.0.imagen', 'Foto muestra 1'),
                 { label: 'Texto alternativo muestra 1', path: 'menu.muestra.0.imagenAlt', type: 'text' },
@@ -242,14 +241,14 @@
                 { label: 'Etiqueta superior', path: 'ubicacion.eyebrow', type: 'text' },
                 { label: 'Título — parte 1', path: 'ubicacion.titulo1', type: 'text' },
                 { label: 'Título — parte 2', path: 'ubicacion.titulo2', type: 'text' },
-                { label: 'Botón “Cómo llegar”', path: 'ubicacion.ctaLlegar', type: 'text' },
+                { label: 'Botón "Cómo llegar"', path: 'ubicacion.ctaLlegar', type: 'text' },
                 { label: 'Dirección — título de tarjeta', path: 'ubicacion.dirTitulo', type: 'text' },
                 { label: 'Dirección — texto (se permite <br>)', path: 'ubicacion.dirTexto', type: 'textarea' },
                 { label: 'Horario — título', path: 'ubicacion.horTitulo', type: 'text' },
                 { label: 'Contacto — título', path: 'ubicacion.telTitulo', type: 'text' },
                 { label: 'Precio — título', path: 'ubicacion.precioTitulo', type: 'text' },
                 { label: 'Precio — texto', path: 'ubicacion.precioTexto', type: 'text' },
-                { label: 'Texto del modal “Cómo llegar”', path: 'ubicacion.direccionModal', type: 'text' }
+                { label: 'Texto del modal "Cómo llegar"', path: 'ubicacion.direccionModal', type: 'text' }
             ],
             lists: [
                 { path: 'ubicacion.horario', label: 'Filas del horario', addLabel: 'Añadir fila',
@@ -270,7 +269,7 @@
     function imgDefForKey(key) {
         for (var t = 0; t < TABS.length; t++) {
             for (var f = 0; f < TABS[t].fields.length; f++) {
-                if (TABS[t].fields[f].img === key) return TABS[t].fields[f];
+                if (TABS[t].fields[f].img === key) return TABS[t][f];
             }
         }
         return null;
@@ -282,45 +281,120 @@
     var toastTimer = null;
     function toast(msg, type) {
         var el = $('#toast');
+        if (!el) return;
         el.textContent = msg;
         el.className = 'toast show ' + (type || '');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { el.className = 'toast'; }, 3600);
     }
     function markDirty() {
-        $('#saveStatus').textContent = 'Hay cambios sin guardar';
-        $('#saveStatus').classList.add('dirty');
+        var el = $('#saveStatus');
+        if (el) { el.textContent = 'Hay cambios sin guardar'; el.classList.add('dirty'); }
     }
     function markSaved() {
-        $('#saveStatus').textContent = 'Todos los cambios publicados';
-        $('#saveStatus').classList.remove('dirty');
+        var el = $('#saveStatus');
+        if (el) { el.textContent = 'Todos los cambios publicados'; el.classList.remove('dirty'); }
     }
 
     // ---------------------------------------------------------------
-    // INICIO Y LOGIN
+    // AUTH
+    // ---------------------------------------------------------------
+    function showLogin() {
+        var lv = $('#loginView');
+        var av = $('#appView');
+        if (lv) lv.classList.add('active');
+        if (av) av.classList.remove('active');
+        isLoggedIn = false;
+    }
+
+    function showApp() {
+        var lv = $('#loginView');
+        var av = $('#appView');
+        if (lv) lv.classList.remove('active');
+        if (av) av.classList.add('active');
+        isLoggedIn = true;
+    }
+
+    function setupLoginForm() {
+        var form = $('#loginForm');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var user = ($('#loginUser') || {}).value || '';
+            var pass = ($('#loginPass') || {}).value || '';
+            var errEl = $('#loginError');
+            var btn = $('#loginBtn');
+
+            if (!user || !pass) {
+                if (errEl) { errEl.textContent = 'Introduce usuario y contraseña.'; errEl.style.display = 'block'; }
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Entrando…';
+            if (errEl) errEl.style.display = 'none';
+
+            fetch(AUTH_URL + '/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ username: user, password: pass })
+            }).then(function (r) {
+                return r.json().then(function (data) {
+                    if (!r.ok) throw new Error(data.error || 'Login failed');
+                    return data;
+                });
+            }).then(function () {
+                showApp();
+                boot();
+            }).catch(function (err) {
+                if (errEl) { errEl.textContent = err.message || 'Credenciales incorrectas.'; errEl.style.display = 'block'; }
+            }).finally(function () {
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
+            });
+        });
+    }
+
+    function logout() {
+        fetch(AUTH_URL + '/logout', { method: 'POST', credentials: 'same-origin' })
+            .then(function () { showLogin(); })
+            .catch(function () { showLogin(); });
+    }
+
+    function checkSession() {
+        return fetch(AUTH_URL + '/check', { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (data) { return data.authenticated === true; })
+            .catch(function () { return false; });
+    }
+
+    // ---------------------------------------------------------------
+    // INICIO
     // ---------------------------------------------------------------
     function init() {
-        $('#logoutBtn').addEventListener('click', function () {
-            location.reload();
-        });
-        enterApp();
-    }
+        setupLoginForm();
+        $('#logoutBtn').addEventListener('click', logout);
 
-    function enterApp() {
-        boot();
+        checkSession().then(function (authed) {
+            if (authed) {
+                showApp();
+                boot();
+            } else {
+                showLogin();
+            }
+        });
     }
 
     function boot() {
         loadContent().then(function (data) {
             if (data && data.general) {
                 content = data;
-                // preserva claves nuevas (volcano, etc.) si el blob es antiguo
                 for (var k in DEFAULT_CONTENT) {
                     if (DEFAULT_CONTENT.hasOwnProperty(k) && content[k] == null) {
                         content[k] = JSON.parse(JSON.stringify(DEFAULT_CONTENT[k]));
                     }
                 }
-                // hero trust compatibilidad
                 if (content.hero && !content.hero.trust && content.hero.badges) content.hero.trust = content.hero.badges;
                 if (content.hero && !content.hero.subtitulo && content.hero.tagline) content.hero.subtitulo = content.hero.tagline;
             } else {
@@ -331,12 +405,12 @@
             bindGlobalActions();
             bindBodyEvents();
             markSaved();
-            toast('Contenido cargado. Edita y pulsa “Guardar cambios”.');
+            toast('Contenido cargado. Edita y pulsa "Guardar cambios".');
         });
     }
 
     function loadContent() {
-        return fetch(API_URL, { headers: { 'Accept': 'application/json' } })
+        return fetch(API_URL, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
             .then(function (r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
@@ -400,7 +474,7 @@
             '<button type="button" data-imgreset="' + f.img + '">Volver al original</button>' +
             '<input type="file" data-imginput="' + f.img + '" accept="image/*" hidden>' +
             '</div>' +
-            '<span class="hint">JPG/PNG (máx ~2 MB recomendado). Se guarda junto al contenido. También puedes pegar una ruta existente, p. ej. <code>assets/images/mi-foto.jpg</code>.</span>' +
+            '<span class="hint">JPG/PNG (máx ~2 MB recomendado). Se guarda junto al contenido.</span>' +
             '</div></div></div>';
     }
 
@@ -521,12 +595,12 @@
     }
 
     // ---------------------------------------------------------------
-    // EDITOR DE LA CARTA (categorías + productos)
+    // EDITOR DE LA CARTA
     // ---------------------------------------------------------------
     function menuEditorHTML() {
         return '<div class="list-editor" id="menuEditor">' +
             '<h3>Categorías y productos</h3>' +
-            '<p class="hint" style="margin-bottom:.8rem">Añade, borra o reordena productos y categorías con ↑ ↓ ✕. Deja vacío “Precio solo” o “Precio menú” si no se aplica.</p>' +
+            '<p class="hint" style="margin-bottom:.8rem">Añade, borra o reordena productos y categorías con ↑ ↓ ✕.</p>' +
             '<div id="menuCats"></div>' +
             '<button type="button" class="btn btn-secondary" data-cat-add>+ Añadir categoría</button>' +
             '</div>';
@@ -571,10 +645,10 @@
                 '</span></div>' +
                 '<div class="cat-editor-body">' +
                 '<div class="field-grid">' +
-                '<input data-cat-f="label" value="' + esc(cat.label) + '" placeholder="Nombre de la categoría (Hamburguesas…)">' +
-                '<input data-cat-f="id" value="' + esc(cat.id) + '" placeholder="Código interno (burgers…)" title="Código usado por los filtros de la web">' +
+                '<input data-cat-f="label" value="' + esc(cat.label) + '" placeholder="Nombre de la categoría">' +
+                '<input data-cat-f="id" value="' + esc(cat.id) + '" placeholder="Código interno">' +
                 '<textarea data-cat-f="nota" rows="2" placeholder="Nota de la categoría">' + esc(cat.nota) + '</textarea>' +
-                '<textarea data-cat-f="complementos" rows="1" placeholder="Complementos/extras (opcional)">' + esc(cat.complementos) + '</textarea>' +
+                '<textarea data-cat-f="complementos" rows="1" placeholder="Complementos/extras">' + esc(cat.complementos) + '</textarea>' +
                 '</div>' +
                 '<div class="list-editor" style="margin-top:1rem">' +
                 '<h3>Productos <button type="button" class="btn btn-secondary" data-item-add="' + ci + '">+ Añadir producto</button></h3>' +
@@ -734,7 +808,7 @@
                         setPath(content, def.path, result);
                         refreshImage(def);
                         markDirty();
-                        toast('Imagen añadida (optimizada). Recuerda pulsar “Guardar cambios”.');
+                        toast('Imagen añadida (optimizada). Recuerda pulsar "Guardar cambios".');
                     });
                 }
             }
@@ -767,7 +841,6 @@
             var v = el.value;
             if (getPath(content, el.dataset.path) != null) setPath(content, el.dataset.path, v);
         });
-        // Listas con cambios pendientes (textos tecleados, sin pulsar nada)
         $$('#tabBody .list-editor').forEach(function (el) {
             var def = findListDef(el.dataset.listpath);
             if (def && !def.skipGather) gatherList(el, def);
@@ -779,18 +852,27 @@
         if ($('#menuEditor')) gatherMenu();
         var btn = $('#btnSave');
         btn.disabled = true;
+
         fetch(API_URL, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY },
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(content)
         }).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
+            if (r.status === 401) {
+                toast('Tu sesión ha expirado. Vuelve a iniciar sesión.', 'err');
+                showLogin();
+                throw new Error('Session expired');
+            }
+            if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || 'HTTP ' + r.status); });
             return r.json();
         }).then(function () {
             markSaved();
             toast('¡Publicado! La web ya muestra los cambios.', 'ok');
         }).catch(function (err) {
-            toast('Error al guardar: ' + err.message + '. Revisa tu conexión.', 'err');
+            if (err.message !== 'Session expired') {
+                toast('Error al guardar: ' + err.message + '. Revisa tu conexión.', 'err');
+            }
         }).finally(function () { btn.disabled = false; });
     }
 
@@ -819,7 +901,7 @@
                 renderTabs();
                 if (tab) showTab(tab.dataset.tab);
                 markDirty();
-                toast('Copia cargada. Revisa y pulsa “Guardar cambios”.', 'ok');
+                toast('Copia cargada. Revisa y pulsa "Guardar cambios".', 'ok');
             } catch (err) {
                 toast('No se pudo leer el archivo: ' + err.message, 'err');
             }
@@ -835,13 +917,13 @@
             if (this.files && this.files[0]) restoreBackup(this.files[0]);
         });
         $('#btnReset').addEventListener('click', function () {
-            if (confirm('¿Restablecer TODO el contenido a los valores originales? Esta acción borra los cambios actuales.')) {
+            if (confirm('¿Restablecer TODO el contenido a los valores originales?')) {
                 content = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
                 var tabBtn = $('.tab-btn.active');
                 renderTabs();
                 if (tabBtn) showTab(tabBtn.dataset.tab);
                 markDirty();
-                toast('Contenido restablecido. Pulsa “Guardar cambios” para publicarlo.', 'ok');
+                toast('Contenido restablecido. Pulsa "Guardar cambios" para publicarlo.', 'ok');
             }
         });
     }
