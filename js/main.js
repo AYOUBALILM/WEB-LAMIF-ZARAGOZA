@@ -18,6 +18,24 @@
             .replace(/"/g, '&quot;');
     }
 
+    function sanitizeHtml(str) {
+        var s = String(str == null ? '' : str);
+        var allowed = ['strong', 'em', 'br', 'p', 'small'];
+        s = s.replace(/<script[\s\S]*?<\/script>/gi, '');
+        s = s.replace(/<iframe[\s\S]*?<\/iframe>/gi, '');
+        s = s.replace(/<object[\s\S]*?<\/object>/gi, '');
+        s = s.replace(/<embed[\s\S]*?>/gi, '');
+        s = s.replace(/on\w+="[^"]*"/gi, '');
+        s = s.replace(/on\w+='[^']*'/gi, '');
+        s = s.replace(/<([a-z][a-z0-9]*)\b[^>]*>/gi, function (m, tag) {
+            return allowed.indexOf(tag.toLowerCase()) !== -1 ? m : '';
+        });
+        s = s.replace(/<\/([a-z][a-z0-9]*)\b[^>]*>/gi, function (m, tag) {
+            return allowed.indexOf(tag.toLowerCase()) !== -1 ? m : '';
+        });
+        return s;
+    }
+
     function pick(obj, path, def) {
         return (path || []).reduce(function (o, k) { return (o && o[k] !== undefined) ? o[k] : undefined; }, obj) || def;
     }
@@ -254,7 +272,7 @@
             if (img) { setPictureSrc(img, e.imagen || DEFAULTS.especialidad.imagen); img.alt = e.imagenAlt || ''; }
 
             const count = s('#espCount');
-            if (count) count.innerHTML = escapeHtml(e.contadorNumero) + ' <small>' + e.contadorTexto + '</small>';
+            if (count) count.innerHTML = escapeHtml(e.contadorNumero) + ' <small>' + sanitizeHtml(e.contadorTexto) + '</small>';
         }
 
         function renderNosotros() {
@@ -265,7 +283,7 @@
             const ti = s('#nosTitulo'); if (ti) ti.innerHTML = escapeHtml(n.titulo1) + '<br>' + escapeHtml(n.titulo2);
 
             const textos = s('#nosTextos');
-            if (textos) textos.innerHTML = (n.textos || []).map(function (t) { return '<p class="about-text">' + t + '</p>'; }).join('');
+            if (textos) textos.innerHTML = (n.textos || []).map(function (t) { return '<p class="about-text">' + sanitizeHtml(t) + '</p>'; }).join('');
 
             const fe = s('#nosFeatures');
             if (fe) fe.innerHTML = (n.features || []).map(function (f, i) {
@@ -318,8 +336,8 @@
                             badge +
                             '<span class="menu-dots" aria-hidden="true"></span>' +
                         '</div>' +
-                        '<span class="menu-price">' + priceCell + '</span>' +
-                        (menuLine ? '<span class="menu-menu-price">' + menuLine + '</span>' : '') +
+                        '<span class="menu-price">' + escapeHtml(priceCell) + '</span>' +
+                        (menuLine ? '<span class="menu-menu-price">' + escapeHtml(menuLine) + '</span>' : '') +
                         '<p class="menu-desc">' + escapeHtml(item.desc) + '</p>';
 
                     grid.appendChild(card);
@@ -377,7 +395,7 @@
 
             const ey = s('#resEyebrow'); if (ey) ey.textContent = r.eyebrow || '';
             const sc = s('#resPuntuacion'); if (sc) sc.textContent = r.puntuacion || '5,0';
-            const res = s('#resResumen'); if (res) res.innerHTML = r.resumen || '';
+            const res = s('#resResumen'); if (res) res.innerHTML = sanitizeHtml(r.resumen || '');
             const go = s('#resGo');
             if (go) { if (r.goUrl) go.setAttribute('href', r.goUrl); const t = $('.cta-text', go); if (t) t.textContent = r.botonVer || 'Ver todas en Google'; }
 
@@ -427,11 +445,11 @@
             const ti = s('#ubiTitulo'); if (ti) ti.innerHTML = escapeHtml(u.titulo1) + '<br>' + escapeHtml(u.titulo2);
 
             const addr = s('#ubiAddress');
-            if (addr) addr.innerHTML = '<h3>' + (u.dirTitulo || 'Dirección') + '</h3><p>' + u.dirTexto + '</p>';
+            if (addr) addr.innerHTML = '<h3>' + escapeHtml(u.dirTitulo || 'Dirección') + '</h3><p>' + sanitizeHtml(u.dirTexto) + '</p>';
 
             const sched = s('#ubiSchedule');
             if (sched) {
-                sched.innerHTML = '<h3>' + (u.horTitulo || 'Horario') + '</h3><div class="schedule">' +
+                sched.innerHTML = '<h3>' + escapeHtml(u.horTitulo || 'Horario') + '</h3><div class="schedule">' +
                     (u.horario || []).map(function (row) {
                         return '<div class="schedule-row"><span>' + escapeHtml(row.dias) + '</span><span>' + escapeHtml(row.horas) + '</span></div>';
                     }).join('') + '</div>';
@@ -439,12 +457,12 @@
 
             const contact = s('#ubiContact');
             if (contact) {
-                contact.innerHTML = '<h3>' + (u.telTitulo || 'Contacto') + '</h3>' +
+                contact.innerHTML = '<h3>' + escapeHtml(u.telTitulo || 'Contacto') + '</h3>' +
                     '<p><a href="tel:' + escapeHtml(g.telefono) + '">Llamar ahora</a> · <a href="' + escapeHtml(g.whatsapp) + '" target="_blank" rel="noopener">' + escapeHtml(g.whatsappLabel || 'WhatsApp') + '</a></p>';
             }
 
             const price = s('#ubiPrice');
-            if (price) price.innerHTML = '<h3>' + (u.precioTitulo || 'Precio medio') + '</h3><p>' + escapeHtml(u.precioTexto) + '</p>';
+            if (price) price.innerHTML = '<h3>' + escapeHtml(u.precioTitulo || 'Precio medio') + '</h3><p>' + escapeHtml(u.precioTexto) + '</p>';
 
             const cta = s('#openDirections'); if (cta) { const t = $('.cta-text', cta); if (t) t.textContent = u.ctaLlegar || 'Cómo llegar'; }
 
@@ -543,7 +561,7 @@
                     '@context': 'https://schema.org',
                     '@type': 'Restaurant',
                     name: g.nombre,
-                    image: (seo.ogImage || '').indexOf('http') === 0 ? seo.ogImage : origin + '/' + (seo.ogImage || 'assets/images/portada.jpg').replace(/^\.?\//, ''),
+                    image: (seo.ogImage || '').indexOf('http') === 0 ? seo.ogImage : origin + '/' + (seo.ogImage || 'assets/images/portada-la-mif-halal-zaragoza.jpg').replace(/^\.?\//, ''),
                     url: origin + '/',
                     telephone: g.telefono,
                     priceRange: g.precioDesde + '€–' + g.precioHasta + '€',
