@@ -108,7 +108,7 @@ window.LaMIF_CONTENT = {
         textos: [
             'Street-food premium 100% halal en el Casco Antiguo de Zaragoza. Ingredientes frescos, preparado al momento. Tacos franceses crujientes, burgers jugosas y platos caseros hechos para que repitas.'
         ],
-        imagen: 'assets/images/sandwiches-cordon-bleu-halal-zaragoza.jpg',
+        imagen: 'assets/images/sandwiches-seccion-halal-zaragoza.jpg',
         imagenAlt: 'Sandwiches y tacos halal al momento de La Mif — Casco Antiguo Zaragoza',
         stats: [
             { n: '50+', label: 'Reseñas en Google' },
@@ -143,13 +143,13 @@ window.LaMIF_CONTENT = {
         }),
         muestra: [
             {
-                imagen: 'assets/images/sandwiches-cordon-bleu-halal-zaragoza.jpg',
+                imagen: 'assets/images/sandwiches-seccion-halal-zaragoza.jpg',
                 imagenAlt: 'Sandwiches y tacos halal hechos al momento en La Mif — Casco Antiguo',
                 t1: 'Sandwiches & Tacos',
                 t2: 'Hechos al momento'
             },
             {
-                imagen: 'assets/images/extras-loaded-cheese-fries-halal-zaragoza.jpg',
+                imagen: 'assets/images/platos-combinados-halal-zaragoza.jpg',
                 imagenAlt: 'Platos caseros halal con patatas, arroz y salsa de champiñón — La Mif Zaragoza',
                 t1: 'Platos caseros',
                 t2: 'Patatas, arroz y salsa champiñón'
@@ -185,7 +185,7 @@ window.LaMIF_CONTENT = {
             { etiqueta: 'Llamar', tipo: 'telefono' },
             { etiqueta: 'WhatsApp', tipo: 'whatsapp' }
         ],
-        imagen: 'assets/images/extras-loaded-cheese-fries-halal-zaragoza.jpg',
+        imagen: 'assets/images/extras-seccion-halal-zaragoza.jpg',
         imagenAlt: 'Plato casero halal de La Mif con patatas, arroz y salsa — Casco Antiguo Zaragoza'
     },
 
