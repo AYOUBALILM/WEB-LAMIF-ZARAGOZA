@@ -659,6 +659,33 @@
     // ---------------------------------------------------------------
     // IMÁGENES
     // ---------------------------------------------------------------
+    function compressImage(file, done) {
+        if (!window.FileReader || !window.Image) { var r0 = new FileReader(); r0.onload = function () { done(r0.result); }; return r0.readAsDataURL(file); }
+        var reader = new FileReader();
+        reader.onload = function () {
+            var img = new Image();
+            img.onload = function () {
+                var MAX = 1680;
+                var w = img.width, h = img.height;
+                var scale = 1;
+                if (w > MAX || h > MAX) { scale = Math.min(MAX / w, MAX / h); w = Math.round(w * scale); h = Math.round(h * scale); }
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                try {
+                    var quality = 0.82;
+                    var out = canvas.toDataURL('image/jpeg', quality);
+                    if (out.length > 1500000) { out = canvas.toDataURL('image/jpeg', 0.7); }
+                    done(out);
+                } catch (e) { done(reader.result); }
+            };
+            img.onerror = function () { done(reader.result); };
+            img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
     function refreshImage(f) {
         var v = getPath(content, f.path) || '';
         var preview = $('[data-preview="' + f.img + '"]');
@@ -703,14 +730,12 @@
                     var def = imgDefForKey(t.dataset.imginput);
                     if (!def) return;
                     if (file.size > 4 * 1024 * 1024) { toast('La imagen pesa demasiado. Usa una menor de ~2 MB.', 'err'); return; }
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                        setPath(content, def.path, reader.result);
+                    compressImage(file, function (result) {
+                        setPath(content, def.path, result);
                         refreshImage(def);
                         markDirty();
-                        toast('Imagen añadida. Recuerda pulsar “Guardar cambios”.');
-                    };
-                    reader.readAsDataURL(file);
+                        toast('Imagen añadida (optimizada). Recuerda pulsar “Guardar cambios”.');
+                    });
                 }
             }
             markDirty();

@@ -184,10 +184,7 @@
             const list = $('#tacosList');
             const img = $('#tacosImg');
             if (img) {
-                const v = content.volcano || {};
-                // usa la imagen de muestra de tacos si existe, fallback a p-3
-                const tImg = (content.menu && content.menu.muestra && content.menu.muestra[0] && content.menu.muestra[0].imagen) || 'assets/images/p-3-v2-recovered-copy-2.jpg';
-                // no sobrescribir si ya es correcta
+                // imagen de tacos es estática en el HTML; no se sobrescribe
             }
             if (!list) return;
             const cats = (content.menu && content.menu.categorias) || (DEFAULTS.menu && DEFAULTS.menu.categorias) || [];
