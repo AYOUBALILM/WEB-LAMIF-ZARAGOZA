@@ -95,7 +95,7 @@ window.LaMIF_CONTENT = {
             'Precio solo o en menú'
         ],
         cta: { texto: 'Ver hamburguesas', href: '#carta' },
-        imagen: 'assets/images/hero-burgers-queso-fundido-halal-zaragoza.jpg',
+        imagen: 'assets/images/burgers-caseras-halal-zaragoza.jpg',
         imagenAlt: 'Hamburguesa casera halal de La Mif con queso fundido — Casco Antiguo Zaragoza',
         contadorNumero: '15',
         contadorTexto: 'burgers<br>en carta'
