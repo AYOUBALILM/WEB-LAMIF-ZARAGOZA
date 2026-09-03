@@ -49,22 +49,11 @@ function cookieHeaders(name, value, maxAge) {
     return { 'Set-Cookie': parts.join('; ') };
 }
 
-function parseJsonBody(req) {
-    return new Promise(function (resolve, reject) {
-        let body = '';
-        let size = 0;
-        const MAX = 1024;
-        req.on('data', function (chunk) {
-            size += chunk.length;
-            if (size > MAX) { reject(new Error('Payload too large')); return; }
-            body += chunk.toString();
-        });
-        req.on('end', function () {
-            try { resolve(JSON.parse(body)); }
-            catch (e) { reject(new Error('Invalid JSON')); }
-        });
-        req.on('error', reject);
-    });
+async function parseJsonBody(req) {
+    const text = await req.text();
+    if (text.length > 1024) throw new Error('Payload too large');
+    if (!text) throw new Error('Empty body');
+    return JSON.parse(text);
 }
 
 export default async (req) => {

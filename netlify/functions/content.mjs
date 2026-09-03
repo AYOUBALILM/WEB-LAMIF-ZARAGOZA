@@ -27,21 +27,11 @@ function json(data, status, extraHeaders) {
     });
 }
 
-function parseJsonBody(req) {
-    return new Promise(function (resolve, reject) {
-        let body = '';
-        let size = 0;
-        req.on('data', function (chunk) {
-            size += chunk.length;
-            if (size > MAX_BODY_SIZE) { reject(new Error('Payload too large (max 4MB)')); req.destroy(); return; }
-            body += chunk.toString();
-        });
-        req.on('end', function () {
-            try { resolve(JSON.parse(body)); }
-            catch (e) { reject(new Error('Invalid JSON')); }
-        });
-        req.on('error', reject);
-    });
+async function parseJsonBody(req) {
+    const text = await req.text();
+    if (text.length > MAX_BODY_SIZE) { throw new Error('Payload too large (max 4MB)'); }
+    if (!text) throw new Error('Empty body');
+    return JSON.parse(text);
 }
 
 // ── Session validation ──
