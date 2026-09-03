@@ -761,6 +761,84 @@ button { font-family: inherit; }
     white-space: nowrap;
 }
 
+/* ---------- Sandwiches & Postres — variedades ---------- */
+.sandwiches {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: var(--paper);
+    color: var(--ink-text);
+}
+.sandwiches-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+}
+.sandwiches-media {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    aspect-ratio: 4 / 3.4;
+    background: var(--paper);
+}
+.sandwiches-media img { width: 100%; height: 100%; object-fit: cover; }
+.sandwiches-text {
+    color: var(--ink-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 32rem;
+    margin: 1rem 0 1.4rem;
+}
+.sandwiches-list { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.6rem; }
+.postres {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: var(--ink);
+    border-top: 1px solid var(--line);
+}
+.postres-grid {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+}
+.postres-media {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    aspect-ratio: 4 / 3.4;
+    background: var(--ink-3);
+}
+.postres-media img { width: 100%; height: 100%; object-fit: cover; }
+.postres-badge {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    background: var(--brand);
+    color: var(--ink);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.38rem 0.65rem;
+    border-radius: 999px;
+}
+.postres-text {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 32rem;
+    margin: 1rem 0 1.4rem;
+}
+.postres-list { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.6rem; }
+.menu-teaser {
+    padding: clamp(4rem, 8vw, 6.5rem) 0;
+    background: var(--ink-2);
+    border-top: 1px solid var(--line);
+    text-align: center;
+}
+
 /* ---------- Seal strip — MADE IN FRESH ---------- */
 .seal-strip {
     background: var(--brand);
@@ -1717,7 +1795,11 @@ section { position: relative; }
     .featured-media::before { display: none; }
     .volcano-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     .tacos-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .sandwiches-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .postres-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     .tacos-media { order: -1; }
+    .sandwiches-media { order: 1; }
+    .postres-media { order: -1; }
     .about-grid { gap: 3rem; }
     .reviews-wrap { grid-template-columns: 1fr; }
     .reviews-summary { position: static; margin-bottom: 0.5rem; }
@@ -1951,6 +2033,12 @@ section { position: relative; }
     /* ---------- Tacos — móvil ---------- */
     .tacos-grid { grid-template-columns: 1fr; gap: 1.6rem; }
     .tacos-media { aspect-ratio: 4 / 3; order: -1; }
+
+    /* ---------- Sandwiches/Postres — móvil ---------- */
+    .sandwiches-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+    .sandwiches-media { aspect-ratio: 4 / 3; order: 1; }
+    .postres-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+    .postres-media { aspect-ratio: 4 / 3; order: -1; }
 
     /* ---------- Seal + CTA — móvil ---------- */
     .seal-strip-inner { flex-direction: column; gap: 0.35rem; }

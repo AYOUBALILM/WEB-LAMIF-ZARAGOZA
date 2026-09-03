@@ -202,6 +202,30 @@
             }).join('');
         }
 
+        function renderSandwiches() {
+            const list = $('#sandwichesList');
+            if (!list) return;
+            const cats = (content.menu && content.menu.categorias) || (DEFAULTS.menu && DEFAULTS.menu.categorias) || [];
+            const cat = cats.find(function (c) { return c.id === 'sandwiches'; });
+            if (!cat || !cat.items) { list.innerHTML = ''; return; }
+            list.innerHTML = cat.items.slice(0,4).map(function (it) {
+                const price = it.solo != null && it.solo !== '' ? formatPrice(it.solo) + '€' : (it.menu ? formatPrice(it.menu) + '€' : '');
+                return '<li class="tacos-item"><div><span class="tacos-item-name">' + escapeHtml(it.nombre) + '</span><br><span class="tacos-item-desc">' + escapeHtml(it.desc) + '</span></div><span class="tacos-item-price">' + escapeHtml(price) + '</span></li>';
+            }).join('');
+        }
+
+        function renderPostres() {
+            const list = $('#postresList');
+            if (!list) return;
+            const cats = (content.menu && content.menu.categorias) || (DEFAULTS.menu && DEFAULTS.menu.categorias) || [];
+            const cat = cats.find(function (c) { return c.id === 'extras'; });
+            if (!cat || !cat.items) { list.innerHTML = ''; return; }
+            list.innerHTML = cat.items.slice(0,4).map(function (it) {
+                const price = it.solo != null && it.solo !== '' ? formatPrice(it.solo) + '€' : '';
+                return '<li class="tacos-item"><div><span class="tacos-item-name">' + escapeHtml(it.nombre) + '</span><br><span class="tacos-item-desc">' + escapeHtml(it.desc) + '</span></div><span class="tacos-item-price">' + escapeHtml(price) + '</span></li>';
+            }).join('');
+        }
+
         function renderMarquee() {
             const track = $('#marqueeTrack');
             if (!track) return;
@@ -615,6 +639,8 @@
             renderFeatured();
             renderBurgers();
             renderTacos();
+            renderSandwiches();
+            renderPostres();
             renderNosotros();
             renderMenu();
             renderReviews();
@@ -762,34 +788,42 @@
             target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
         });
 
-        // Filtros de la carta (delegado)
-        $('#menuFilter').addEventListener('click', function (e) {
-            const btn = e.target.closest ? e.target.closest('.filter-btn') : null;
-            if (!btn) return;
-            $$('.filter-btn', this).forEach(function (b) {
-                b.classList.remove('active');
-                b.setAttribute('aria-selected', 'false');
+        // Filtros de la carta (delegado) — solo en carta.html
+        const menuFilterEl = $('#menuFilter');
+        if (menuFilterEl) {
+            menuFilterEl.addEventListener('click', function (e) {
+                const btn = e.target.closest ? e.target.closest('.filter-btn') : null;
+                if (!btn) return;
+                $$('.filter-btn', this).forEach(function (b) {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                applyFilter(btn.dataset.filter);
+                updateNote(btn.dataset.filter);
             });
-            btn.classList.add('active');
-            btn.setAttribute('aria-selected', 'true');
-            applyFilter(btn.dataset.filter);
-            updateNote(btn.dataset.filter);
-        });
+        }
 
-        // Tiles de categorías Goiko → filtran la carta
+        // Tiles de categorías Goiko → filtran la carta si existe #carta, si no navegan a carta.html
         $$('.cat-tile[data-filter]').forEach(function (tile) {
             tile.addEventListener('click', function (e) {
-                e.preventDefault();
-                const f = tile.dataset.filter;
-                const btn = $('.filter-btn[data-filter="' + f + '"]', $('#menuFilter'));
-                if (btn) {
-                    $$('.filter-btn', $('#menuFilter')).forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-                    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+                const menuOnPage = !!$('#menuFilter') && !!$('#menuGrid');
+                if (menuOnPage) {
+                    e.preventDefault();
+                    const f = tile.dataset.filter;
+                    const mf = $('#menuFilter');
+                    const btn = mf ? $('.filter-btn[data-filter="' + f + '"]', mf) : null;
+                    if (btn && mf) {
+                        $$('.filter-btn', mf).forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+                        btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+                    }
+                    applyFilter(f);
+                    updateNote(f);
+                    const carta = $('#carta');
+                    if (carta) carta.scrollIntoView({ behavior: reduceMotion ? 'auto':'smooth', block:'start' });
                 }
-                applyFilter(f);
-                updateNote(f);
-                const carta = $('#carta');
-                if (carta) carta.scrollIntoView({ behavior: reduceMotion ? 'auto':'smooth', block:'start' });
+                // si no hay carta en esta página, deja que el href="carta.html" navegue
             });
         });
 
