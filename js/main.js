@@ -776,6 +776,23 @@
             updateNote(btn.dataset.filter);
         });
 
+        // Tiles de categorías Goiko → filtran la carta
+        $$('.cat-tile[data-filter]').forEach(function (tile) {
+            tile.addEventListener('click', function (e) {
+                e.preventDefault();
+                const f = tile.dataset.filter;
+                const btn = $('.filter-btn[data-filter="' + f + '"]', $('#menuFilter'));
+                if (btn) {
+                    $$('.filter-btn', $('#menuFilter')).forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+                    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+                }
+                applyFilter(f);
+                updateNote(f);
+                const carta = $('#carta');
+                if (carta) carta.scrollIntoView({ behavior: reduceMotion ? 'auto':'smooth', block:'start' });
+            });
+        });
+
         // Modal cómo llegar
         const openDirections = $('#openDirections');
         const overlay = $('#directionsOverlay');

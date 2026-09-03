@@ -364,25 +364,22 @@ button { font-family: inherit; }
 .hero-scrim-left {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg,
-        rgba(12, 11, 9, 0.96) 0%,
-        rgba(12, 11, 9, 0.84) 36%,
-        rgba(12, 11, 9, 0.28) 70%,
-        rgba(12, 11, 9, 0.06) 100%);
+    background: rgba(12, 11, 9, 0.58);
 }
 .hero-scrim-bottom {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(12, 11, 9, 0.9) 0%, rgba(12, 11, 9, 0) 34%);
+    background: linear-gradient(to top, rgba(12, 11, 9, 0.88) 0%, rgba(12, 11, 9, 0.35) 45%, transparent 75%);
 }
 
 .hero-inner {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     padding: calc(var(--header-h) + 3.5rem) clamp(1.25rem, 4vw, 2.5rem) 5.5rem;
+    text-align: center;
 }
 
 .hero-title {
@@ -417,17 +414,18 @@ button { font-family: inherit; }
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text);
-    margin-bottom: 1.8rem;
+    margin: 0 auto 1.8rem;
     max-width: 32rem;
 }
 .hero-tagline[hidden] { display: none !important; }
 
-.hero-cta { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-bottom: 1.6rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-bottom: 1.6rem; justify-content: center; }
 .hero-cta .btn { min-height: 56px; }
 .hero-cta .btn-primary { background: var(--brand); color: var(--ink); box-shadow: 0 12px 32px var(--brand-glow); }
 
 .hero-trust,
-.hero-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.9rem; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.9rem; justify-content: center; }
+.hero-location { text-align: center; }
 .pill {
     display: inline-flex;
     align-items: center;
@@ -585,6 +583,66 @@ button { font-family: inherit; }
     padding: 0.42rem 0.7rem;
     border-radius: 999px;
 }
+
+/* ---------- Categorías Goiko — grilla visual ---------- */
+.cat-grid {
+    padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+    background: var(--ink);
+    border-top: 1px solid var(--line);
+}
+.cat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.9rem;
+}
+.cat-tile {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: var(--ink-3);
+    border: 1px solid var(--line);
+}
+.cat-tile picture, .cat-tile img { width: 100%; height: 100%; display: block; }
+.cat-tile img { object-fit: cover; transition: transform 0.6s var(--ease); }
+.cat-tile:hover img { transform: scale(1.06); }
+.cat-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(12,11,9,0.85), transparent 55%);
+}
+.cat-tile-label {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 2;
+    padding: 0.9rem 1rem;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--text);
+}
+.cat-tile-label small {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    opacity: 0.75;
+    margin-left: 0.3rem;
+}
+.cat-tile--all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--brand);
+    color: var(--ink);
+    text-align: center;
+    font-size: 1.1rem;
+}
+.cat-tile--all::after { display: none; }
+.cat-tile--all .cat-tile-label { position: static; color: var(--ink); background: none; }
 
 /* ---------- Burgers — protagonistas ---------- */
 .burgers {
@@ -1877,6 +1935,10 @@ section { position: relative; }
     .volcano-subtitle { font-size: 1.15rem; }
     .volcano-text { font-size: 0.97rem; }
     .volcano-meta { gap: 0.5rem; }
+
+    /* ---------- Categorías Goiko — móvil ---------- */
+    .cat-tiles { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+    .cat-tile-label { font-size: 1.05rem; }
 
     /* ---------- Burgers — móvil ---------- */
     .burgers-rail {
