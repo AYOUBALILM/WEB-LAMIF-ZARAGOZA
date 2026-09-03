@@ -69,11 +69,24 @@
         // ============================================================
         // RENDERIZADO POR SECCIÓN
         // ============================================================
+        function setPictureSrc(imgEl, newSrc) {
+            if (!imgEl || !newSrc) return;
+            imgEl.src = newSrc;
+            const pic = imgEl.closest('picture');
+            if (pic) {
+                const base = newSrc.replace(/\.[^/.]+$/, '');
+                const avif = pic.querySelector('source[type="image/avif"]');
+                const webp = pic.querySelector('source[type="image/webp"]');
+                if (avif) avif.srcset = base + '.avif';
+                if (webp) webp.srcset = base + '.webp';
+            }
+        }
+
         function renderHero() {
             const h = content.hero || {};
             const dh = DEFAULTS.hero || {};
             const heroImg = $('#heroImage');
-            if (heroImg) { heroImg.src = h.imagen || dh.imagen; if (h.imagenAlt) heroImg.alt = h.imagenAlt; }
+            if (heroImg) { setPictureSrc(heroImg, h.imagen || dh.imagen); if (h.imagenAlt) heroImg.alt = h.imagenAlt; }
 
             const title = $('#heroTitle');
             if (title) title.innerHTML = escapeHtml(h.titulo1 || dh.titulo1 || 'LA') + ' <em>' + escapeHtml(h.tituloEm || dh.tituloEm || 'MIF') + '</em>';
@@ -144,7 +157,7 @@
             const cta = s('#volcanoCta');
             if (cta) { const t = cta.textContent; if (v.cta && v.cta.texto) cta.firstChild.textContent = v.cta.texto + ' '; if (v.cta && v.cta.href) cta.setAttribute('href', v.cta.href); }
             const img = s('#volcanoImg');
-            if (img) { img.src = v.imagen || (DEFAULTS.volcano && DEFAULTS.volcano.imagen) || 'assets/images/p-2-v2-copy-3.jpg'; if (v.imagenAlt) img.alt = v.imagenAlt; }
+            if (img) { setPictureSrc(img, v.imagen || (DEFAULTS.volcano && DEFAULTS.volcano.imagen) || 'assets/images/especial-volcano-burger-queso-halal-zaragoza.jpg'); if (v.imagenAlt) img.alt = v.imagenAlt; }
         }
 
         function renderBurgers() {
@@ -217,7 +230,7 @@
             }
 
             const img = s('#espImg');
-            if (img) { img.src = e.imagen || DEFAULTS.especialidad.imagen; img.alt = e.imagenAlt || ''; }
+            if (img) { setPictureSrc(img, e.imagen || DEFAULTS.especialidad.imagen); img.alt = e.imagenAlt || ''; }
 
             const count = s('#espCount');
             if (count) count.innerHTML = escapeHtml(e.contadorNumero) + ' <small>' + e.contadorTexto + '</small>';
@@ -241,7 +254,7 @@
             }).join('');
 
             const img = s('#nosImg');
-            if (img) { img.src = n.imagen || DEFAULTS.nosotros.imagen; img.alt = n.imagenAlt || ''; }
+            if (img) { setPictureSrc(img, n.imagen || DEFAULTS.nosotros.imagen); img.alt = n.imagenAlt || ''; }
 
             const stats = s('#nosStats');
             if (stats) stats.innerHTML = (n.stats || []).map(function (st) {
@@ -323,13 +336,16 @@
             const note = $('#menuNote');
             if (note) note.innerHTML = '';
 
-            // Muestra (2 fotos con leyenda)
+            // Muestra (2 fotos con leyenda) — con AVIF/WebP
             const show = $('#menuShowcase');
             if (show) {
                 show.innerHTML = (m.muestra || []).map(function (it) {
-                    return '<figure class="showcase-item">' +
+                    const base = (it.imagen || '').replace(/\.[^/.]+$/, '');
+                    return '<figure class="showcase-item"><picture>' +
+                        '<source srcset="' + escapeHtml(base + '.avif') + '" type="image/avif">' +
+                        '<source srcset="' + escapeHtml(base + '.webp') + '" type="image/webp">' +
                         '<img src="' + escapeHtml(it.imagen) + '" alt="' + escapeHtml(it.imagenAlt) + '" width="1300" height="812" loading="lazy" decoding="async">' +
-                        '<figcaption><span>' + escapeHtml(it.t1) + '</span><strong>' + escapeHtml(it.t2) + '</strong></figcaption></figure>';
+                        '</picture><figcaption><span>' + escapeHtml(it.t1) + '</span><strong>' + escapeHtml(it.t2) + '</strong></figcaption></figure>';
                 }).join('');
             }
         }
@@ -378,7 +394,7 @@
             }
 
             const img = s('#pedImg');
-            if (img) { img.src = p.imagen || DEFAULTS.pedido.imagen; img.alt = p.imagenAlt || ''; }
+            if (img) { setPictureSrc(img, p.imagen || DEFAULTS.pedido.imagen); img.alt = p.imagenAlt || ''; }
         }
 
         function renderUbicacion() {
@@ -412,7 +428,35 @@
             const cta = s('#openDirections'); if (cta) { const t = $('.cta-text', cta); if (t) t.textContent = u.ctaLlegar || 'Cómo llegar'; }
 
             const map = s('#ubiMap');
-            if (map && g.mapsEmbed) map.src = g.mapsEmbed;
+            if (map) {
+                const embed = g.mapsEmbed;
+                if (embed) {
+                    if (!map.src || map.src === 'about:blank' || map.getAttribute('src') === '') {
+                        map.setAttribute('data-src', embed);
+                    } else if (!map.getAttribute('data-src')) {
+                        map.setAttribute('data-src', embed);
+                        map.removeAttribute('src');
+                    }
+                    if ('IntersectionObserver' in window) {
+                        const io = new IntersectionObserver(function (entries) {
+                            entries.forEach(function (e) {
+                                if (e.isIntersecting) {
+                                    if (!map.src || map.src === 'about:blank') map.src = map.getAttribute('data-src');
+                                    io.unobserve(map);
+                                }
+                            });
+                        }, { rootMargin: '400px 0px' });
+                        io.observe(map);
+                        // fallback: si el usuario hace hover/click en el área, carga inmediata
+                        map.addEventListener('mouseenter', function once() {
+                            if (!map.src || map.src === 'about:blank') map.src = map.getAttribute('data-src');
+                            map.removeEventListener('mouseenter', once);
+                        }, { once: true });
+                    } else {
+                        map.src = embed;
+                    }
+                }
+            }
 
             const dirAddr = s('#dirAddress');
             if (dirAddr) dirAddr.textContent = u.direccionModal || (g.addressLine1 + ' · ' + g.addressLine2);
@@ -519,6 +563,24 @@
             // Glovo / Uber Eats en footer
             const glovoEl = $('#footGlovo'); if (glovoEl) glovoEl.setAttribute('href', g.glovo);
             const uberEl = $('#footUber'); if (uberEl) uberEl.setAttribute('href', g.ubereats);
+        }
+
+        function setupAnalytics() {
+            function track(label) {
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', 'conversion_click_' + label, { event_category: 'conversion', event_label: label });
+                }
+            }
+            document.addEventListener('click', function (e) {
+                const a = e.target.closest ? e.target.closest('a[href]') : null;
+                if (!a) return;
+                const href = a.getAttribute('href') || '';
+                if (href.indexOf('glovo') !== -1) track('glovo');
+                else if (href.indexOf('ubereats') !== -1) track('ubereats');
+                else if (href.indexOf('wa.me') !== -1) track('whatsapp');
+                else if (href.indexOf('tel:') === 0) track('llamar');
+                else if (href.indexOf('maps.app.goo.gl') !== -1) track('maps');
+            }, { passive: true });
         }
 
         let menuCards = [];
@@ -652,11 +714,15 @@
 
         const header = $('#siteHeader');
         const backToTop = $('#backToTop');
+        const heroParallaxImg = $('#heroImage');
         function onScroll() {
             const y = window.scrollY;
             header.classList.toggle('scrolled', y > 40);
             backToTop.classList.toggle('visible', y > 600);
             updateActiveNav();
+            if (heroParallaxImg && !reduceMotion && y < window.innerHeight * 1.1) {
+                heroParallaxImg.style.transform = 'translateY(' + (y * 0.14) + 'px)';
+            }
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();

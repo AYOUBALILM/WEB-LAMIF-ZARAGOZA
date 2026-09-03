@@ -16,20 +16,32 @@
     <meta property="og:title" content="La MIF Zaragoza | Hamburguesas, Tacos Franceses y Comida Halal">
     <meta property="og:description" content="La Mif Zaragoza — Casco Antiguo. Hamburguesas, tacos franceses, sandwiches y platos caseros 100% halal, hechos al momento. 5,0★ en Google.">
     <meta property="og:url" content="https://incomparable-sunshine-e0cb87.netlify.app/">
-    <meta property="og:image" content="https://incomparable-sunshine-e0cb87.netlify.app/assets/images/portada.jpg">
+    <meta property="og:image" content="https://incomparable-sunshine-e0cb87.netlify.app/assets/images/hero-burgers-queso-fundido-halal-zaragoza.jpg">
     <meta property="og:locale" content="es_ES">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="La MIF Zaragoza | Hamburguesas, Tacos Franceses y Comida Halal">
     <meta name="twitter:description" content="Hamburguesas, tacos franceses, sandwiches y platos caseros 100% halal en el Casco Antiguo de Zaragoza. 5,0★ en Google.">
-    <meta name="twitter:image" content="https://incomparable-sunshine-e0cb87.netlify.app/assets/images/portada.jpg">
+    <meta name="twitter:image" content="https://incomparable-sunshine-e0cb87.netlify.app/assets/images/hero-burgers-queso-fundido-halal-zaragoza.jpg">
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Google Search Console — sustituye XXX por tu código -->
+    <meta name="google-site-verification" content="REEMPLAZA-CON-TU-CODIGO-GSC">
+    <!-- Google Analytics 4 — sustituye G-XXXXXXX -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+    </script>
 
     <!-- Schema.org Restaurant (se actualiza desde el contenido) -->
     <script type="application/ld+json" id="schemaJsonLd">
@@ -83,6 +95,18 @@
         }
     }
     </script>
+    <script type="application/ld+json" id="schemaFaq">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "¿Es todo 100% halal?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Toda nuestra carta es 100% halal, desde la carne hasta las salsas y el proceso de elaboración en La Mif, C. de Marceliano Isábal, 5 — Casco Antiguo, Zaragoza." } },
+            { "@type": "Question", "name": "¿Hacéis reservas?", "acceptedAnswer": { "@type": "Answer", "text": "No reservamos mesa: somos street-food para comer aquí, para llevar o a domicilio en el Casco Antiguo de Zaragoza. Ven directamente o pide por Glovo, Uber Eats o WhatsApp." } },
+            { "@type": "Question", "name": "¿Tenéis opciones sin gluten?", "acceptedAnswer": { "@type": "Answer", "text": "Algunas ensaladas y platos sin pan pueden adaptarse. Consúltanos al pedir por WhatsApp (+34 671 23 84 56) y te asesoramos." } },
+            { "@type": "Question", "name": "¿Dónde puedo pedir comida halal en el Casco Antiguo de Zaragoza?", "acceptedAnswer": { "@type": "Answer", "text": "En La Mif, C. de Marceliano Isábal, 5 — Casco Antiguo, Zaragoza. Hamburguesas y tacos franceses halal hechos al momento. Pide para llevar o a domicilio por Glovo, Uber Eats o WhatsApp." } }
+        ]
+    }
+    </script>
 </head>
 <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -131,10 +155,14 @@
         <!-- ============ HERO ============ -->
         <section class="hero" id="inicio">
             <div class="hero-media">
-                <img id="heroImage" src="assets/images/portada.jpg"
-                     alt="Hamburguesas con queso fundido de La Mif, Zaragoza"
-                     width="1600" height="1067"
-                     fetchpriority="high" decoding="async">
+                <picture>
+                    <source srcset="assets/images/hero-burgers-queso-fundido-halal-zaragoza.avif" type="image/avif">
+                    <source srcset="assets/images/hero-burgers-queso-fundido-halal-zaragoza.webp" type="image/webp">
+                    <img id="heroImage" src="assets/images/hero-burgers-queso-fundido-halal-zaragoza.jpg"
+                         alt="Hamburguesas con queso fundido de La Mif, Zaragoza"
+                         width="1600" height="1067"
+                         fetchpriority="high" decoding="async">
+                </picture>
                 <div class="hero-scrim hero-scrim-left"></div>
                 <div class="hero-scrim hero-scrim-bottom"></div>
             </div>
@@ -220,7 +248,11 @@
                     </a>
                 </div>
                 <figure class="volcano-media">
-                    <img id="volcanoImg" src="assets/images/p-2-v2-copy-3.jpg" alt="Especial Volcano de La Mif — burger con queso fundido" width="1300" height="975" loading="lazy" decoding="async">
+                    <picture>
+                        <source srcset="assets/images/especial-volcano-burger-queso-halal-zaragoza.avif" type="image/avif">
+                        <source srcset="assets/images/especial-volcano-burger-queso-halal-zaragoza.webp" type="image/webp">
+                        <img id="volcanoImg" src="assets/images/especial-volcano-burger-queso-halal-zaragoza.jpg" alt="Especial Volcano de La Mif — burger con queso fundido, 100% halal, Zaragoza" width="1300" height="975" loading="lazy" decoding="async">
+                    </picture>
                     <span class="volcano-badge">Especial · 100% halal</span>
                 </figure>
             </div>
@@ -244,10 +276,14 @@
                     </a>
                 </div>
                 <figure class="featured-media">
-                    <img id="espImg" src="assets/images/p-2-v2-copy-3.jpg"
-                         alt="Burger de La Mif con queso fundido"
-                         width="1300" height="975"
-                         loading="lazy" decoding="async">
+                    <picture>
+                        <source srcset="assets/images/hamburguesas-caseras-halal-zaragoza.avif" type="image/avif">
+                        <source srcset="assets/images/hamburguesas-caseras-halal-zaragoza.webp" type="image/webp">
+                        <img id="espImg" src="assets/images/hamburguesas-caseras-halal-zaragoza.jpg"
+                             alt="Hamburguesa casera halal de La Mif con queso fundido — Casco Antiguo Zaragoza"
+                             width="1300" height="975"
+                             loading="lazy" decoding="async">
+                    </picture>
                     <span class="featured-count" id="espCount">15 <small>burgers<br>en carta</small></span>
                 </figure>
             </div>
@@ -272,7 +308,11 @@
         <section class="tacos" id="tacos">
             <div class="container tacos-grid">
                 <figure class="tacos-media">
-                    <img id="tacosImg" src="assets/images/p-3-v2-recovered-copy-2.jpg" alt="Tacos franceses de La Mif — tortilla, patatas y queso fundido" width="1300" height="975" loading="lazy" decoding="async">
+                    <picture>
+                        <source srcset="assets/images/tacos-franceses-sandwiches-halal-zaragoza.avif" type="image/avif">
+                        <source srcset="assets/images/tacos-franceses-sandwiches-halal-zaragoza.webp" type="image/webp">
+                        <img id="tacosImg" src="assets/images/tacos-franceses-sandwiches-halal-zaragoza.jpg" alt="Tacos franceses halal de La Mif — tortilla, patatas y queso fundido, Casco Antiguo Zaragoza" width="1300" height="975" loading="lazy" decoding="async">
+                    </picture>
                     <span class="tacos-badge">Hecho al momento</span>
                 </figure>
                 <div class="tacos-copy">
@@ -326,10 +366,14 @@
 
                 <div class="about-media">
                     <figure class="about-photo">
-                        <img id="nosImg" src="assets/images/p-3-v2-recovered-copy-2.jpg"
-                             alt="Sandwiches y tacos al momento de La Mif"
-                             width="1300" height="975"
-                             loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="assets/images/tacos-franceses-sandwiches-halal-zaragoza.avif" type="image/avif">
+                            <source srcset="assets/images/tacos-franceses-sandwiches-halal-zaragoza.webp" type="image/webp">
+                            <img id="nosImg" src="assets/images/tacos-franceses-sandwiches-halal-zaragoza.jpg"
+                                 alt="Sandwiches y tacos halal al momento de La Mif — Casco Antiguo Zaragoza"
+                                 width="1300" height="975"
+                                 loading="lazy" decoding="async">
+                        </picture>
                     </figure>
                     <div class="about-stats" id="nosStats">
                         <div class="stat">
@@ -375,20 +419,28 @@
 
                 <div class="menu-showcase" id="menuShowcase">
                     <figure class="showcase-item">
-                        <img src="assets/images/p-3-v2-recovered-copy-2.jpg"
-                             alt="Sandwiches y tacos hechos al momento en La Mif"
-                             width="1300" height="812"
-                             loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="assets/images/hamburguesas-caseras-halal-zaragoza.avif" type="image/avif">
+                            <source srcset="assets/images/hamburguesas-caseras-halal-zaragoza.webp" type="image/webp">
+                            <img src="assets/images/hamburguesas-caseras-halal-zaragoza.jpg"
+                                 alt="Sandwiches y tacos halal hechos al momento en La Mif — Casco Antiguo"
+                                 width="1300" height="812"
+                                 loading="lazy" decoding="async">
+                        </picture>
                         <figcaption>
                             <span>Sandwiches &amp; Tacos</span>
                             <strong>Hechos al momento</strong>
                         </figcaption>
                     </figure>
                     <figure class="showcase-item">
-                        <img src="assets/images/p-4-v2-copy-3.jpg"
-                             alt="Platos caseros con patatas, arroz y salsa de champiñón"
-                             width="1300" height="812"
-                             loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.avif" type="image/avif">
+                            <source srcset="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.webp" type="image/webp">
+                            <img src="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.jpg"
+                                 alt="Platos caseros halal con patatas, arroz y salsa de champiñón — La Mif Zaragoza"
+                                 width="1300" height="812"
+                                 loading="lazy" decoding="async">
+                        </picture>
                         <figcaption>
                             <span>Platos caseros</span>
                             <strong>Patatas, arroz y salsa champiñón</strong>
@@ -473,6 +525,34 @@
             </div>
         </section>
 
+        <!-- ============ FAQ — SEO LOCAL ============ -->
+        <section class="faq" id="faq">
+            <div class="container">
+                <div class="section-head">
+                    <span class="eyebrow">Resolvemos tus dudas</span>
+                    <h2 class="display-title">Preguntas<br>frecuentes</h2>
+                </div>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary>¿Es todo 100% halal?</summary>
+                        <p>Sí. Toda nuestra carta es 100% halal, desde la carne hasta las salsas y el proceso de elaboración. Cumplimos estrictamente la normativa halal.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>¿Hacéis reservas?</summary>
+                        <p>No reservamos mesa: somos street-food para comer aquí, para llevar o a domicilio. Ven directamente a C. de Marceliano Isábal, 5 — Casco Antiguo.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>¿Tenéis opciones sin gluten?</summary>
+                        <p>Algunas ensaladas y platos sin pan pueden adaptarse. Pregúntanos al pedir por WhatsApp o teléfono y te asesoramos según alergias.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>¿Dónde puedo pedir comida halal en el Casco Antiguo de Zaragoza?</summary>
+                        <p>En La Mif, en pleno Casco Antiguo (C. de Marceliano Isábal, 5). Pide para llevar o a domicilio por Glovo, Uber Eats o WhatsApp. Hamburguesas y tacos franceses halal hechos al momento.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
         <!-- ============ CTA — CONVERSIÓN ============ -->
         <section class="cta-band" id="ctaBand">
             <div class="container cta-band-inner">
@@ -514,10 +594,14 @@
                         </div>
                     </div>
                     <figure class="order-media">
-                        <img id="pedImg" src="assets/images/p-4-v2-copy-3.jpg"
-                             alt="Plato casero de La Mif con patatas y salsa"
-                             width="1300" height="975"
-                             loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.avif" type="image/avif">
+                            <source srcset="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.webp" type="image/webp">
+                            <img id="pedImg" src="assets/images/platos-caseros-patatas-arroz-halal-zaragoza.jpg"
+                                 alt="Plato casero halal de La Mif con patatas, arroz y salsa — Casco Antiguo Zaragoza"
+                                 width="1300" height="975"
+                                 loading="lazy" decoding="async">
+                        </picture>
                     </figure>
                 </div>
             </div>
@@ -585,14 +669,14 @@
 
                     <figure class="location-map">
                         <iframe id="ubiMap"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3031.6!2d-0.8808!3d41.6488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd5914cc0f43e04d%3A0x4a8123c189f9c4c0!2sLa+Mif!5e0!3m2!1ses!2ses!4v1234567890"
+                            data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3031.6!2d-0.8808!3d41.6488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd5914cc0f43e04d%3A0x4a8123c189f9c4c0!2sLa+Mif!5e0!3m2!1ses!2ses!4v1234567890"
                             width="100%"
                             height="100%"
                             style="border:0;"
                             allowfullscreen=""
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
-                            title="Mapa de La Mif — C. de Marceliano Isábal 5, Zaragoza"></iframe>
+                            title="Mapa de La Mif — C. de Marceliano Isábal 5, Casco Antiguo, Zaragoza"></iframe>
                     </figure>
                 </div>
             </div>
