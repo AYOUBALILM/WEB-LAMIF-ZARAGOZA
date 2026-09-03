@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de La Mif · Administración</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <!-- ======== APP ======== -->
+    <div class="app" id="appView">
+        <header class="topbar">
+            <div class="topbar-brand">
+                <span class="brand-mark">★</span> LA <em>MIF</em>
+            </div>
+            <div class="topbar-title">
+                <strong>Panel de administración</strong>
+                <small>Los cambios se publican al instante</small>
+            </div>
+            <a class="btn btn-ghost-link" href="./" target="_blank" rel="noopener">Ver web ↗</a>
+            <button class="btn btn-ghost-link" id="logoutBtn" type="button">Salir</button>
+        </header>
+
+        <div class="layout">
+            <nav class="tabs" id="tabNav" aria-label="Secciones a editar"></nav>
+
+            <main class="tab-body" id="tabBody"></main>
+
+            <aside class="help">
+                <h3>Consejos</h3>
+                <ul>
+                    <li>Edita cada apartado y pulsa <strong>Guardar cambios</strong> al terminar.</li>
+                    <li>La web se actualiza <strong>al instante</strong>, sin esperas.</li>
+                    <li>Para cambiar una foto, sube la nueva imagen desde tu equipo o pega la ruta de una que ya exista en <code>assets/images/</code>.</li>
+                    <li>Haz una <strong>copia de seguridad</strong> antes de grandes cambios.</li>
+                </ul>
+            </aside>
+        </div>
+
+        <footer class="savebar">
+            <span class="savebar-status" id="saveStatus">Sin cambios pendientes</span>
+            <div class="savebar-actions">
+                <button class="btn btn-secondary" id="btnRestore" type="button">Cargar copia</button>
+                <button class="btn btn-secondary" id="btnBackup" type="button">Descargar copia</button>
+                <button class="btn btn-danger" id="btnReset" type="button">Restablecer</button>
+                <button class="btn btn-primary" id="btnSave" type="button">Guardar cambios</button>
+                <input type="file" id="restoreFile" accept="application/json" hidden>
+            </div>
+            <p class="savebar-note">Clave de admin configurable en <code>js/admin.js</code> y <code>netlify/functions/content.mjs</code>.</p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="js/menu.js"></script>
+    <script src="js/content.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://incomparable-sunshine-e0cb87.netlify.app/sitemap.xml
