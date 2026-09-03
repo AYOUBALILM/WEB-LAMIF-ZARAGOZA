@@ -482,7 +482,9 @@
                     url: origin + '/',
                     telephone: g.telefono,
                     priceRange: g.precioDesde + '€–' + g.precioHasta + '€',
-                    servesCuisine: ['Hamburguesas', 'Tacos franceses', 'Sandwiches', 'Comida halal'],
+                    servesCuisine: ['Halal', 'Fast Food', 'French', 'Hamburguesas', 'Tacos franceses', 'Sandwiches'],
+                    hasMenu: origin + '/#carta',
+                    acceptsReservations: 'False',
                     address: {
                         '@type': 'PostalAddress',
                         streetAddress: g.addressLine1,
@@ -494,7 +496,12 @@
                     geo: { '@type': 'GeoCoordinates', latitude: 41.6488, longitude: -0.8808 },
                     aggregateRating: { '@type': 'AggregateRating', ratingValue: (g.rating || '5,0').replace(',', '.'), reviewCount: String(g.reseñas || '50').replace(/[^0-9]/g, '') },
                     openingHoursSpecification: hours,
-                    sameAs: [g.instagram, g.tiktok, g.mapsUrl]
+                    sameAs: [g.instagram, g.tiktok, g.mapsUrl],
+                    potentialAction: {
+                        '@type': 'OrderAction',
+                        target: [g.glovo, g.ubereats, g.whatsapp].filter(Boolean),
+                        deliveryMethod: 'http://purl.org/goodrelations/v1#DeliveryModeParcelService'
+                    }
                 };
                 schemaEl.textContent = JSON.stringify(schema);
             }
