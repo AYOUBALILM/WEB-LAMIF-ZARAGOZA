@@ -26,12 +26,15 @@
     <meta name="twitter:image" content="https://lamifzaragoza.netlify.app/assets/images/portada-la-mif-halal-zaragoza.jpg">
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.google.com">
     <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" as="image" href="assets/images/portada-la-mif-halal-zaragoza.avif" type="image/avif" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/portada-la-mif-halal-zaragoza.webp" type="image/webp">
     <!-- Google Search Console — sustituye XXX por tu código -->
     <meta name="google-site-verification" content="REEMPLAZA-CON-TU-CODIGO-GSC">
     <!-- Google Analytics 4 — sustituye G-XXXXXXX -->
@@ -873,8 +876,8 @@
         </div>
     </div>
 
-    <script src="js/menu.js"></script>
-    <script src="js/content.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/menu.js" defer></script>
+    <script src="js/content.js" defer></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>
