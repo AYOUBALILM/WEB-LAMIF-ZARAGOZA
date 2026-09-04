@@ -6,11 +6,36 @@
 // ========================================
 
 import { getStore } from '@netlify/blobs';
-import { randomBytes, pbkdf2Sync } from 'crypto';
+import { randomBytes, pbkdf2Sync, timingSafeEqual } from 'crypto';
 
 const SESSION_TTL = 24 * 60 * 60; // 24 hours in seconds
 const SESSION_STORE = 'lamif-content';
 const SESSION_PREFIX = 'session_';
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+// In-memory rate limiter (per-function instance)
+const loginAttempts = {};
+
+function getRateLimitKey(req) {
+    return req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+}
+
+function checkRateLimit(key) {
+    const now = Date.now();
+    const record = loginAttempts[key];
+    if (!record || now - record.start > LOGIN_WINDOW_MS) {
+        loginAttempts[key] = { start: now, count: 1 };
+        return true;
+    }
+    record.count++;
+    return record.count <= MAX_LOGIN_ATTEMPTS;
+}
+
+function isRateLimited(key) {
+    const record = loginAttempts[key];
+    return record && record.count > MAX_LOGIN_ATTEMPTS && (Date.now() - record.start) <= LOGIN_WINDOW_MS;
+}
 
 function parseCookies(header) {
     const cookies = {};
@@ -26,6 +51,12 @@ function hashPassword(password, salt) {
     return pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
 }
 
+function safeHashCompare(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(Buffer.from(a, 'hex'), Buffer.from(b, 'hex'));
+}
+
 function generateSessionId() {
     return randomBytes(32).toString('hex');
 }
@@ -35,6 +66,12 @@ function jsonResponse(data, status, extraHeaders) {
         status: status,
         headers: Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {})
     });
+}
+
+function getCorsHeaders(req) {
+    const origin = req.headers.get('origin') || '';
+    const allowed = /^https?:\/\/(.*\.)?netlify\.app$/i.test(origin) || /^https?:\/\/lamifzaragoza\.netlify\.app$/i.test(origin);
+    return allowed ? { 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Credentials': 'true' } : {};
 }
 
 function cookieHeaders(name, value, maxAge) {
@@ -63,12 +100,19 @@ export default async (req) => {
 
     // CORS preflight
     if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' } });
+        const cors = getCorsHeaders(req);
+        return new Response(null, { status: 204, headers: Object.assign({ 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }, cors) });
     }
 
     try {
         // ── POST /api/auth/login ──
         if (req.method === 'POST' && path === '/login') {
+            const rateLimitKey = getRateLimitKey(req);
+            if (isRateLimited(rateLimitKey)) {
+                console.warn('[AUTH] Rate limited login attempt from:', rateLimitKey);
+                return jsonResponse({ error: 'Too many attempts. Try again in 15 minutes.' }, 429);
+            }
+
             const ADMIN_USERNAME = process.env.LAMIF_ADMIN_USERNAME || 'admin';
             const ADMIN_PASSWORD_HASH = process.env.LAMIF_ADMIN_PASSWORD_HASH;
             const ADMIN_SALT = process.env.LAMIF_ADMIN_SALT;
@@ -90,12 +134,14 @@ export default async (req) => {
             }
 
             if (username !== ADMIN_USERNAME) {
+                checkRateLimit(rateLimitKey);
                 console.warn('[AUTH] Login attempt with invalid username: ' + username);
                 return jsonResponse({ error: 'Invalid credentials.' }, 401);
             }
 
             const hash = hashPassword(password, ADMIN_SALT);
-            if (hash !== ADMIN_PASSWORD_HASH) {
+            if (!safeHashCompare(hash, ADMIN_PASSWORD_HASH)) {
+                checkRateLimit(rateLimitKey);
                 console.warn('[AUTH] Login attempt with invalid password for user: ' + username);
                 return jsonResponse({ error: 'Invalid credentials.' }, 401);
             }

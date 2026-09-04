@@ -201,11 +201,6 @@ window.LaMIF_CONTENT = {
             { dias: 'Viernes – Sábado', horas: '12:00 – 02:00' },
             { dias: 'Domingo', horas: '12:00 – 01:30' }
         ],
-        horarioSchema: [
-            { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '12:00', closes: '01:30' },
-            { dias: ['Friday', 'Saturday'], opens: '12:00', closes: '02:00' },
-            { dias: ['Sunday'], opens: '12:00', closes: '01:30' }
-        ],
         telTitulo: 'Contacto',
         precioTitulo: 'Precio medio',
         precioTexto: '1 – 20 € por persona',

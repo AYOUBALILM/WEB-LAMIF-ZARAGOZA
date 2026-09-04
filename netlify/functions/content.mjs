@@ -10,6 +10,23 @@ const SESSION_STORE = 'lamif-content';
 const SESSION_PREFIX = 'session_';
 const MAX_BODY_SIZE = 4 * 1024 * 1024; // 4MB max payload
 
+// Server-side sanitization for HTML strings (allows only safe tags)
+function stripDangerousHtml(str) {
+    if (typeof str !== 'string') return str;
+    return str
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+        .replace(/<object[\s\S]*?<\/object>/gi, '')
+        .replace(/<embed[\s\S]*?>/gi, '')
+        .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+        .replace(/<form[\s\S]*?<\/form>/gi, '')
+        .replace(/<link[\s\S]*?>/gi, '')
+        .replace(/<meta[\s\S]*?>/gi, '')
+        .replace(/<base[\s\S]*?>/gi, '')
+        .replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|`[^`]*`|[^\s>]+)/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '');
+}
+
 function parseCookies(header) {
     const cookies = {};
     if (!header) return cookies;
@@ -25,6 +42,12 @@ function json(data, status, extraHeaders) {
         status: status,
         headers: Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {})
     });
+}
+
+function getCorsHeaders(req) {
+    const origin = req.headers.get('origin') || '';
+    const allowed = /^https?:\/\/(.*\.)?netlify\.app$/i.test(origin) || /^https?:\/\/lamifzaragoza\.netlify\.app$/i.test(origin);
+    return allowed ? { 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Credentials': 'true' } : {};
 }
 
 async function parseJsonBody(req) {
@@ -126,10 +149,25 @@ function validateContent(data) {
     return null; // valid
 }
 
+// Recursively sanitize all string values in content
+function sanitizeContent(obj) {
+    if (typeof obj === 'string') return stripDangerousHtml(obj);
+    if (Array.isArray(obj)) return obj.map(sanitizeContent);
+    if (obj && typeof obj === 'object') {
+        const result = {};
+        for (const key of Object.keys(obj)) {
+            result[key] = sanitizeContent(obj[key]);
+        }
+        return result;
+    }
+    return obj;
+}
+
 export default async (req) => {
-    // CORS preflight (same-origin, minimal)
+    // CORS preflight (same-origin only)
     if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
+        const cors = getCorsHeaders(req);
+        return new Response(null, { status: 204, headers: Object.assign({ 'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }, cors) });
     }
 
     try {
@@ -145,7 +183,7 @@ export default async (req) => {
         if (req.method === 'PUT') {
             const session = await validateSession(req);
             if (!session) {
-                return json({ error: 'Authentication required. Please log in.' }, 401);
+                return json({ error: 'Authentication required. Please log in.' }, 401, getCorsHeaders(req));
             }
 
             // Parse and validate body
@@ -159,11 +197,12 @@ export default async (req) => {
                 return json({ error: 'Validation failed: ' + validationError }, 400);
             }
 
-            // Save
-            await store.set('content.json', JSON.stringify(data));
+            // Sanitize and Save
+            const clean = sanitizeContent(data);
+            await store.set('content.json', JSON.stringify(clean));
             console.log('[CONTENT] Updated by:', session.username, 'at:', new Date().toISOString());
 
-            return json({ ok: true });
+            return json({ ok: true }, 200, getCorsHeaders(req));
         }
 
         // ── Method not allowed ──

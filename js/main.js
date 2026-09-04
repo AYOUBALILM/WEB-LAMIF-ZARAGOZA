@@ -25,14 +25,25 @@
         s = s.replace(/<iframe[\s\S]*?<\/iframe>/gi, '');
         s = s.replace(/<object[\s\S]*?<\/object>/gi, '');
         s = s.replace(/<embed[\s\S]*?>/gi, '');
-        s = s.replace(/on\w+="[^"]*"/gi, '');
-        s = s.replace(/on\w+='[^']*'/gi, '');
+        s = s.replace(/<svg[\s\S]*?<\/svg>/gi, '');
+        s = s.replace(/<form[\s\S]*?<\/form>/gi, '');
+        s = s.replace(/<link[\s\S]*?>/gi, '');
+        s = s.replace(/<meta[\s\S]*?>/gi, '');
+        s = s.replace(/<base[\s\S]*?>/gi, '');
+        s = s.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|`[^`]*`|[^\s>]+)/gi, '');
         s = s.replace(/<([a-z][a-z0-9]*)\b[^>]*>/gi, function (m, tag) {
             return allowed.indexOf(tag.toLowerCase()) !== -1 ? m : '';
         });
         s = s.replace(/<\/([a-z][a-z0-9]*)\b[^>]*>/gi, function (m, tag) {
             return allowed.indexOf(tag.toLowerCase()) !== -1 ? m : '';
         });
+        return s;
+    }
+
+    function safeHref(url) {
+        var s = String(url == null ? '' : url).trim();
+        if (!s) return '#';
+        if (/^javascript:/i.test(s) || /^data:/i.test(s) || /^vbscript:/i.test(s) || /^blob:/i.test(s)) return '#';
         return s;
     }
 
@@ -89,14 +100,17 @@
         // ============================================================
         function setPictureSrc(imgEl, newSrc) {
             if (!imgEl || !newSrc) return;
-            imgEl.src = newSrc;
+            const src = String(newSrc);
+            if (/^javascript:/i.test(src) || /^data:/i.test(src) || /^vbscript:/i.test(src)) return;
+            imgEl.src = src;
             const pic = imgEl.closest('picture');
             if (pic) {
-                const base = newSrc.replace(/\.[^/.]+$/, '');
+                const base = src.replace(/\.[^/.]+$/, '');
+                const safeBase = base.indexOf('..') === -1 && base.indexOf('//') <= 0 ? base : src;
                 const avif = pic.querySelector('source[type="image/avif"]');
                 const webp = pic.querySelector('source[type="image/webp"]');
-                if (avif) avif.srcset = base + '.avif';
-                if (webp) webp.srcset = base + '.webp';
+                if (avif) avif.srcset = safeBase + '.avif';
+                if (webp) webp.srcset = safeBase + '.webp';
             }
         }
 
@@ -124,14 +138,14 @@
                 const src = h.ctaPrimary || h.cta2 || dh.ctaPrimary || dh.cta2;
                 const t = $('.cta-text', cta1);
                 if (t) t.textContent = (src && src.texto) || 'PEDIR AHORA';
-                if (src && src.href) cta1.setAttribute('href', src.href);
+                if (src && src.href) cta1.setAttribute('href', safeHref(src.href));
             }
             const cta2 = $('#heroCta2');
             if (cta2) {
                 const src = h.ctaSecondary || h.cta1 || dh.ctaSecondary || dh.cta1;
                 const t = $('.cta-text', cta2);
                 if (t) t.textContent = (src && src.texto) || 'VER CARTA';
-                if (src && src.href) cta2.setAttribute('href', src.href);
+                if (src && src.href) cta2.setAttribute('href', safeHref(src.href));
             }
 
             // trust badges: usa h.trust si existe, fallback a h.badges
@@ -173,7 +187,7 @@
                 meta.innerHTML = '<span class="volcano-price"><strong>' + escapeHtml(solo) + '€</strong> solo</span><span class="volcano-dot" aria-hidden="true">·</span><span class="volcano-price"><strong>' + escapeHtml(menu) + '€</strong> en menú</span><span class="volcano-seal">' + escapeHtml(v.sello || 'MADE IN FRESH') + '</span>';
             }
             const cta = s('#volcanoCta');
-            if (cta) { const t = cta.textContent; if (v.cta && v.cta.texto) cta.firstChild.textContent = v.cta.texto + ' '; if (v.cta && v.cta.href) cta.setAttribute('href', v.cta.href); }
+            if (cta) { const t = cta.textContent; if (v.cta && v.cta.texto) cta.firstChild.textContent = v.cta.texto + ' '; if (v.cta && v.cta.href) cta.setAttribute('href', safeHref(v.cta.href)); }
             const img = s('#volcanoImg');
             if (img) { setPictureSrc(img, v.imagen || (DEFAULTS.volcano && DEFAULTS.volcano.imagen) || 'assets/images/especial-volcano-burger-queso-halal-zaragoza.jpg'); if (v.imagenAlt) img.alt = v.imagenAlt; }
         }
@@ -265,7 +279,7 @@
             const cta = s('#espCta');
             if (cta) {
                 const t = $('.cta-text', cta); if (t) t.textContent = (e.cta && e.cta.texto) || 'Ver hamburguesas';
-                if (e.cta && e.cta.href) cta.setAttribute('href', e.cta.href);
+                if (e.cta && e.cta.href) cta.setAttribute('href', safeHref(e.cta.href));
             }
 
             const img = s('#espImg');
@@ -397,7 +411,7 @@
             const sc = s('#resPuntuacion'); if (sc) sc.textContent = r.puntuacion || '5,0';
             const res = s('#resResumen'); if (res) res.innerHTML = sanitizeHtml(r.resumen || '');
             const go = s('#resGo');
-            if (go) { if (r.goUrl) go.setAttribute('href', r.goUrl); const t = $('.cta-text', go); if (t) t.textContent = r.botonVer || 'Ver todas en Google'; }
+            if (go) { if (r.goUrl) go.setAttribute('href', safeHref(r.goUrl)); const t = $('.cta-text', go); if (t) t.textContent = r.botonVer || 'Ver todas en Google'; }
 
             const grid = $('#reviewsGrid');
             if (!grid) return;
@@ -412,7 +426,7 @@
                     stars + '</div>';
                 const quote = '<blockquote>“' + escapeHtml(it.texto) + '”</blockquote>';
                 const date = it.fecha ? '<span class="review-date">' + escapeHtml(it.fecha) + '</span>' : '';
-                return '<a href="' + escapeHtml(gUrl) + '" target="_blank" rel="noopener" class="review-card' + (it.destacado ? ' featured' : '') + '">' + head + quote + date + '</a>';
+                return '<a href="' + escapeHtml(safeHref(gUrl)) + '" target="_blank" rel="noopener" class="review-card' + (it.destacado ? ' featured' : '') + '">' + head + quote + date + '</a>';
             }).join('');
         }
 
@@ -427,7 +441,7 @@
             const btns = $('#pedButtons');
             if (btns) {
                 btns.innerHTML = (p.opciones || []).map(function (op) {
-                    return '<a href="' + escapeHtml(orderHref(op.tipo)) + '"' + (op.tipo !== 'telefono' ? ' target="_blank" rel="noopener"' : '') + ' class="btn btn-ink">' +
+                    return '<a href="' + escapeHtml(safeHref(orderHref(op.tipo))) + '"' + (op.tipo !== 'telefono' ? ' target="_blank" rel="noopener"' : '') + ' class="btn btn-ink">' +
                         (ICONS[op.tipo] || '') + escapeHtml(op.etiqueta) + '</a>';
                 }).join('');
             }
@@ -458,7 +472,7 @@
             const contact = s('#ubiContact');
             if (contact) {
                 contact.innerHTML = '<h3>' + escapeHtml(u.telTitulo || 'Contacto') + '</h3>' +
-                    '<p><a href="tel:' + escapeHtml(g.telefono) + '">Llamar ahora</a> · <a href="' + escapeHtml(g.whatsapp) + '" target="_blank" rel="noopener">' + escapeHtml(g.whatsappLabel || 'WhatsApp') + '</a></p>';
+                    '<p><a href="tel:' + escapeHtml(g.telefono) + '">Llamar ahora</a> · <a href="' + escapeHtml(safeHref(g.whatsapp)) + '" target="_blank" rel="noopener">' + escapeHtml(g.whatsappLabel || 'WhatsApp') + '</a></p>';
             }
 
             const price = s('#ubiPrice');
@@ -469,7 +483,7 @@
             const map = s('#ubiMap');
             if (map) {
                 const embed = g.mapsEmbed;
-                if (embed) {
+                if (embed && /^https:\/\/(www\.)?google\.com\/maps\/embed/.test(embed)) {
                     if (!map.src || map.src === 'about:blank' || map.getAttribute('src') === '') {
                         map.setAttribute('data-src', embed);
                     } else if (!map.getAttribute('data-src')) {
@@ -501,9 +515,9 @@
             if (dirAddr) dirAddr.textContent = u.direccionModal || (g.addressLine1 + ' · ' + g.addressLine2);
 
             $$('.dir-option').forEach(function (a) {
-                if (a.dataset.app === 'google' && g.mapsUrl) a.setAttribute('href', g.mapsUrl);
-                if (a.dataset.app === 'apple' && g.mapsAppleUrl) a.setAttribute('href', g.mapsAppleUrl);
-                if (a.dataset.app === 'waze' && g.wazeUrl) a.setAttribute('href', g.wazeUrl);
+                if (a.dataset.app === 'google' && g.mapsUrl) a.setAttribute('href', safeHref(g.mapsUrl));
+                if (a.dataset.app === 'apple' && g.mapsAppleUrl) a.setAttribute('href', safeHref(g.mapsAppleUrl));
+                if (a.dataset.app === 'waze' && g.wazeUrl) a.setAttribute('href', safeHref(g.wazeUrl));
             });
         }
 
@@ -522,7 +536,7 @@
                     { icon: 'whatsapp', href: g.whatsapp, label: 'WhatsApp de La Mif' }
                 ];
                 social.innerHTML = links.map(function (l) {
-                    return '<a href="' + escapeHtml(l.href) + '" target="_blank" rel="noopener" aria-label="' + escapeHtml(l.label) + '">' + SOCIAL_ICONS[l.icon] + '</a>';
+                    return '<a href="' + escapeHtml(safeHref(l.href)) + '" target="_blank" rel="noopener" aria-label="' + escapeHtml(l.label) + '">' + SOCIAL_ICONS[l.icon] + '</a>';
                 }).join('');
             }
 
@@ -594,14 +608,14 @@
             const g = content.general || {};
 
             // Teléfono
-            $$('a[href^="tel:"]').forEach(function (a) { a.setAttribute('href', 'tel:' + g.telefono); });
+            $$('a[href^="tel:"]').forEach(function (a) { a.setAttribute('href', 'tel:' + String(g.telefono || '').replace(/[^0-9+]/g, '')); });
 
             // WhatsApp
-            $$('a[href^="https://wa.me/"]').forEach(function (a) { a.setAttribute('href', g.whatsapp); });
+            $$('a[href^="https://wa.me/"]').forEach(function (a) { a.setAttribute('href', safeHref(g.whatsapp)); });
 
             // Glovo / Uber Eats en footer
-            const glovoEl = $('#footGlovo'); if (glovoEl) glovoEl.setAttribute('href', g.glovo);
-            const uberEl = $('#footUber'); if (uberEl) uberEl.setAttribute('href', g.ubereats);
+            const glovoEl = $('#footGlovo'); if (glovoEl) glovoEl.setAttribute('href', safeHref(g.glovo));
+            const uberEl = $('#footUber'); if (uberEl) uberEl.setAttribute('href', safeHref(g.ubereats));
         }
 
         function setupAnalytics() {

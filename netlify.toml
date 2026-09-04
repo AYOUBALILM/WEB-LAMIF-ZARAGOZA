@@ -32,7 +32,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' 'sha256-DLGhaRauLO0OxCwxXkE6bRJG2YfV+CWk1RFMPt8aD3A=' 'sha256-1LfI09F4IBSyFa0/lXQFBEHXBWCnVdWMn6y9HODR7dM=' 'sha256-eDiBmF0VDWpqbHhVNVdGKMJmHmfKHcGF1sQH4JDJMMs='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google.com https://maps.google.com; frame-src https://www.google.com https://maps.google.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google.com https://maps.google.com; frame-src https://www.google.com https://maps.google.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 
 # ── Static Asset Caching ──
 [[headers]]
