@@ -776,8 +776,8 @@
   ],
   "tema": {
     "colors": {
-      "brand": "#00c2ff",
-      "brandDark": "#0099cc",
+      "brand": "#ff7a00",
+      "brandDark": "#e85f00",
       "brandLight": "#ffa14d",
       "bg": "#0c0b09",
       "bg2": "#14110e",
