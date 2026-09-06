@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "general": {
     "nombre": "La Mif",
     "lema": "Burgers · Tacos franceses · Sandwiches",
@@ -776,8 +776,8 @@
   ],
   "tema": {
     "colors": {
-      "brand": "#e6007e",
-      "brandDark": "#c2006b",
+      "brand": "#00c2ff",
+      "brandDark": "#0099cc",
       "brandLight": "#ffa14d",
       "bg": "#0c0b09",
       "bg2": "#14110e",
