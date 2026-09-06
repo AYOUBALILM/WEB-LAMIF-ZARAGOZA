@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Web de La Mif · restaurante halal en Zaragoza",
-  "dependencies": {
-    "@netlify/blobs": "^8.1.0"
+  "scripts": {
+    "serve": "node server.mjs",
+    "start": "node server.mjs"
   }
 }

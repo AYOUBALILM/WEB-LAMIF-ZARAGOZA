@@ -1,26 +1,5 @@
 [build]
   publish = "."
-  functions = "netlify/functions"
-
-[functions]
-  node_bundler = "esbuild"
-  external_node_modules = ["@netlify/blobs"]
-
-# ── API Redirects ──
-[[redirects]]
-  from = "/api/content"
-  to = "/.netlify/functions/content"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth"
-  to = "/.netlify/functions/auth"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/*"
-  to = "/.netlify/functions/auth"
-  status = 200
 
 # ── Security Headers ──
 [[headers]]
@@ -32,7 +11,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google.com https://maps.google.com; frame-src https://www.google.com https://maps.google.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://raw.githubusercontent.com https://www.google.com https://maps.google.com; frame-src https://www.google.com https://maps.google.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 
 # ── Static Asset Caching ──
 [[headers]]

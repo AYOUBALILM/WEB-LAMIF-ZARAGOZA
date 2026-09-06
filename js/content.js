@@ -217,5 +217,30 @@ window.LaMIF_CONTENT = {
         { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '12:00', closes: '01:30' },
         { dias: ['Friday', 'Saturday'], opens: '12:00', closes: '02:00' },
         { dias: ['Sunday'], opens: '12:00', closes: '01:30' }
-    ]
+    ],
+
+    tema: {
+        colors: {
+            brand: '#ff7a00',       // botones, enlaces, acentos principales
+            brandDark: '#e85f00',   // hovers del color principal
+            brandLight: '#ffa14d',  // degradados y detalles
+            bg: '#0c0b09',          // fondo general (modo oscuro)
+            bg2: '#14110e',         // fondo de secciones alternas
+            surface: '#1c1814',     // tarjetas y superficies
+            text: '#f5f0e7',        // texto principal
+            muted: '#a89f90',       // texto secundario
+            accent: '#2fbf71',      // sello HALAL y positivos
+            paper: '#fbf7f0',       // secciones claras
+            paperText: '#1c1913'    // texto sobre fondo claro
+        },
+        fonts: {
+            heading: "'Bebas Neue'",
+            body: "'Inter'"
+        },
+        animations: {
+            reveal: true,           // aparición al hacer scroll
+            marquee: true,          // cinta de palabras en movimiento
+            hover: true             // efectos al pasar el ratón (botones, tarjetas)
+        }
+    }
 };

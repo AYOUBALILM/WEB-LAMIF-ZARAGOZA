@@ -902,6 +902,27 @@ button { font-family: inherit; }
     to { transform: translateX(-50%); }
 }
 
+/* ---------- Tema: interruptores de animación (panel) ---------- */
+html.animate-off .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+html.animate-off .reveal.is-visible { opacity: 1 !important; transform: none !important; }
+html.marquee-off .marquee-track { animation: none !important; }
+html.marquee-off .marquee-track { will-change: auto; }
+html.hover-off *,
+html.hover-off *::before,
+html.hover-off *::after { transition-duration: 0ms !important; }
+html.hover-off .btn:hover,
+html.hover-off .btn:focus-visible { transform: none !important; }
+html.hover-off .feature-item,
+html.hover-off .review-card,
+html.hover-off .burger-rail-card,
+html.hover-off .menu-card:hover,
+html.hover-off .location-card,
+html.hover-off .order-panel { transform: none !important; box-shadow: none !important; }
+
 /* ---------- Grid split util ---------- */
 .grid-split {
     display: grid;

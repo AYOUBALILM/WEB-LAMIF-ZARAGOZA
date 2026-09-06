@@ -45,6 +45,42 @@
     // ---------------------------------------------------------------
     function IMG(key, path, label) { return { img: key, path: path, label: label }; }
 
+    var HEADING_FONTS = ['Bebas Neue', 'Oswald', 'Anton', 'Playfair Display', 'Montserrat', 'Poppins', 'Raleway'].map(function (f) {
+        return { v: "'" + f + "'", t: f };
+    });
+    var BODY_FONTS = ['Inter', 'Montserrat', 'Poppins', 'Open Sans', 'Raleway', 'Nunito Sans'].map(function (f) {
+        return { v: "'" + f + "'", t: f };
+    });
+
+    function C(f) { return { label: f[2] || f[0], path: 'tema.colors.' + f[0], type: 'color' }; }
+
+    var THEME_PRESETS = [
+        {
+            label: 'Naranja La Mif (actual)',
+            colors: { brand: '#ff7a00', brandDark: '#e85f00', brandLight: '#ffa14d', bg: '#0c0b09', bg2: '#14110e', surface: '#1c1814', text: '#f5f0e7', muted: '#a89f90', accent: '#2fbf71', paper: '#fbf7f0', paperText: '#1c1913' }
+        },
+        {
+            label: 'Rojo fuego 🔥',
+            colors: { brand: '#ff3b30', brandDark: '#d92d23', brandLight: '#ff6b61', bg: '#120c0b', bg2: '#1a1210', surface: '#241813', text: '#fdeee8', muted: '#b39a8e', accent: '#58d68d', paper: '#fff5ef', paperText: '#24100a' }
+        },
+        {
+            label: 'Verde halal 🌿',
+            colors: { brand: '#1fbf62', brandDark: '#16a34a', brandLight: '#5fd68d', bg: '#0a120c', bg2: '#0f1a12', surface: '#14241a', text: '#eefcf2', muted: '#8fb39b', accent: '#ffb020', paper: '#f3fff6', paperText: '#0d2416' }
+        },
+        {
+            label: 'Dorado premium ✨',
+            colors: { brand: '#d4a017', brandDark: '#b8860b', brandLight: '#f0c04a', bg: '#12100c', bg2: '#1a1712', surface: '#262014', text: '#faf5e8', muted: '#b6a98c', accent: '#c25e2a', paper: '#fdf8ec', paperText: '#231a08' }
+        },
+        {
+            label: 'Azul noche 🌙',
+            colors: { brand: '#3b82f6', brandDark: '#2563eb', brandLight: '#7cb3ff', bg: '#0a0e1a', bg2: '#101623', surface: '#1a2233', text: '#eef3ff', muted: '#93a1bd', accent: '#22d3ee', paper: '#f2f6ff', paperText: '#101a30' }
+        },
+        {
+            label: 'Vino elegante 🍷',
+            colors: { brand: '#c0392b', brandDark: '#9e2b1f', brandLight: '#e06252', bg: '#140b0e', bg2: '#1c1014', surface: '#2a151c', text: '#fbf0f2', muted: '#b0919a', accent: '#d4a017', paper: '#fef6f7', paperText: '#2a0f16' }
+        }
+    ];
+
     var TABS = [
         {
             id: 'general', label: 'General',
@@ -63,6 +99,29 @@
                 { label: 'Valoración en Google (ej: 5,0)', path: 'general.rating', type: 'text' },
                 { label: 'Número de reseñas', path: 'general.reseñas', type: 'text' },
                 { label: 'Porcentaje halal', path: 'general.halalPct', type: 'text' }
+            ]
+        },
+        {
+            id: 'tema', label: 'Apariencia',
+            hint: 'Colores, fuentes y animaciones de toda la web. Elige un color por cada parte o usa una paleta rápida.',
+            preset: true,
+            fields: [
+                C(['brand', 'Color principal (marca)']),
+                C(['brandDark', 'Color principal — oscuro (hovers)']),
+                C(['brandLight', 'Color principal — claro (degradados)']),
+                C(['bg', 'Fondo general']),
+                C(['bg2', 'Fondo de secciones alternas']),
+                C(['surface', 'Superficies (tarjetas)']),
+                C(['text', 'Texto principal']),
+                C(['muted', 'Texto secundario']),
+                C(['accent', 'Sello HALAL y positivos']),
+                C(['paper', 'Fondo de secciones claras']),
+                C(['paperText', 'Texto sobre fondo claro']),
+                { label: 'Fuente de los títulos', path: 'tema.fonts.heading', type: 'select', options: HEADING_FONTS },
+                { label: 'Fuente del texto', path: 'tema.fonts.body', type: 'select', options: BODY_FONTS },
+                { label: 'Animación al hacer scroll', path: 'tema.animations.reveal', type: 'checkbox', hint: 'Los bloques aparecen suavemente al desplazarte.' },
+                { label: 'Cinta de palabras en movimiento', path: 'tema.animations.marquee', type: 'checkbox' },
+                { label: 'Efectos al pasar el ratón', path: 'tema.animations.hover', type: 'checkbox', hint: 'Elevación de botones y tarjetas.' }
             ]
         },
         {
@@ -445,6 +504,12 @@
         if (!tab) return;
         var body = $('#tabBody');
         var html = '<div class="tab-head"><h2>' + esc(tab.label) + '</h2><p>' + esc(tab.hint) + '</p></div>';
+        if (tab.preset) {
+            html += '<div class="presets"><span class="presets-label">Paletas rápidas:</span>' +
+                THEME_PRESETS.map(function (p, i) {
+                    return '<button type="button" class="preset-btn" data-preset="' + i + '">' + esc(p.label) + '</button>';
+                }).join('') + '</div>';
+        }
         tab.fields.forEach(function (f) { html += f.img ? imgFieldHTML(f) : fieldHTML(f); });
         tab.lists.forEach(function (def) { html += listEditorHTML(def); });
         if (id === 'carta') html += menuEditorHTML();
@@ -454,12 +519,30 @@
     }
 
     function fieldHTML(f) {
-        var isTextarea = f.type === 'textarea';
-        var attrs = ' data-path="' + esc(f.path) + '"' + (f.hint ? ' title="' + esc(f.hint) + '"' : '');
-        var tagOpen = isTextarea ? '<textarea' + attrs + '>' : '<input type="' + (f.type === 'number' ? 'text' : f.type) + '"' + attrs + '/>';
-        var tagClose = isTextarea ? '</textarea>' : '';
-        return '<div class="field"><label>' + esc(f.label) + '</label>' + tagOpen + tagClose +
-            (f.hint ? '<div class="hint">' + esc(f.hint) + '</div>' : '') + '</div>';
+        var box = '<div class="field">';
+        if (f.type === 'checkbox') {
+            box += '<label class="check-row"><input type="checkbox" data-path="' + esc(f.path) + '"> ' + esc(f.label) + '</label>';
+        } else if (f.type === 'select') {
+            var opts = (f.options || []).map(function (o) {
+                return '<option value="' + esc(o.v) + '">' + esc(o.t) + '</option>';
+            }).join('');
+            box += '<label>' + esc(f.label) + '</label><select data-path="' + esc(f.path) + '">' + opts + '</select>';
+        } else if (f.type === 'color') {
+            box += '<label>' + esc(f.label) + '</label>' +
+                '<div class="color-row">' +
+                '<input type="color" data-path="' + esc(f.path) + '" aria-label="Selector">' +
+                '<input type="text" data-path-text="' + esc(f.path) + '" placeholder="#rrggbb" spellcheck="false">' +
+                '<button type="button" class="btn btn-secondary" data-color-reset="' + esc(f.path) + '" title="Volver al original">Original</button>' +
+                '</div>';
+        } else {
+            var isTextarea = f.type === 'textarea';
+            var attrs = ' data-path="' + esc(f.path) + '"' + (f.hint ? ' title="' + esc(f.hint) + '"' : '');
+            var tagOpen = isTextarea ? '<textarea' + attrs + '>' : '<input type="' + (f.type === 'number' ? 'text' : f.type) + '"' + attrs + '/>';
+            var tagClose = isTextarea ? '</textarea>' : '';
+            box += '<label>' + esc(f.label) + '</label>' + tagOpen + tagClose;
+        }
+        if (f.hint) box += '<div class="hint">' + esc(f.hint) + '</div>';
+        return box + '</div>';
     }
 
     function imgFieldHTML(f) {
@@ -482,9 +565,18 @@
         tab.fields.forEach(function (f) {
             if (f.img) { refreshImage(f); return; }
             var v = getPath(content, f.path);
+            if (f.type === 'checkbox') {
+                var cb = $('[data-path="' + f.path + '"]');
+                if (cb) cb.checked = !!v;
+                return;
+            }
             var el = $('[data-path="' + f.path + '"]');
             if (!el) return;
             el.value = (v == null ? '' : v);
+            if (f.type === 'color') {
+                var txt = $('[data-path-text="' + f.path + '"]');
+                if (txt) txt.value = (v == null ? '' : v);
+            }
         });
         tab.lists.forEach(function (def) {
             var el = $('.list-editor[data-listpath="' + def.path + '"]');
@@ -793,6 +885,31 @@
                 if (path) { setPath(content, path, defaultFor(path)); refreshImage(imgDefForKey(resetBtn.dataset.imgreset) || {}); markDirty(); }
                 return;
             }
+            var presetBtn = t.closest('[data-preset]');
+            if (presetBtn) {
+                var p = THEME_PRESETS[parseInt(presetBtn.dataset.preset, 10)];
+                if (p) {
+                    for (var k in p.colors) { if (p.colors.hasOwnProperty(k)) setPath(content, 'tema.colors.' + k, p.colors[k]); }
+                    var temaTab = TABS.filter(function (t2) { return t2.id === 'tema'; })[0];
+                    if (temaTab) populateTab(temaTab);
+                    markDirty();
+                    toast('Paleta aplicada. Pulsa "Guardar cambios" para publicarla.', 'ok');
+                }
+                return;
+            }
+            var colorReset = t.closest('[data-color-reset]');
+            if (colorReset) {
+                var rp = colorReset.dataset.colorReset;
+                var rv = getPath(DEFAULT_CONTENT, rp);
+                if (rv == null || rv === '') return;
+                setPath(content, rp, rv);
+                var cel = $('[data-path="' + rp + '"]');
+                var ctxt = $('[data-path-text="' + rp + '"]');
+                if (cel) cel.value = rv;
+                if (ctxt) ctxt.value = rv;
+                markDirty();
+                return;
+            }
             if (e.isTrusted) menuClickHandler(e);
         });
 
@@ -825,6 +942,24 @@
                     if (preview) preview.src = t.value || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="92"/>';
                 }
             }
+            if (t && t.type === 'color') {
+                var cp2 = t.dataset.path;
+                if (cp2) {
+                    var txt2 = $('[data-path-text="' + cp2 + '"]');
+                    if (txt2) txt2.value = t.value;
+                    setPath(content, cp2, t.value.toLowerCase());
+                }
+            }
+            if (t && t.dataset && t.dataset.pathText !== undefined) {
+                var cp = t.dataset.pathText;
+                var hex = t.value.trim();
+                if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+                    var normal = hex.toLowerCase();
+                    setPath(content, cp, normal);
+                    var picker = $('[data-path="' + cp + '"]');
+                    if (picker) picker.value = normal;
+                }
+            }
             markDirty();
         });
     }
@@ -838,8 +973,23 @@
     // ---------------------------------------------------------------
     function gatherFields() {
         $$('#tabBody [data-path]').forEach(function (el) {
-            var v = el.value;
-            if (getPath(content, el.dataset.path) != null) setPath(content, el.dataset.path, v);
+            var path = el.dataset.path;
+            var current = getPath(content, path);
+            if (current == null) return;
+            var v;
+            if (el.type === 'checkbox') {
+                v = el.checked;
+            } else {
+                v = el.value;
+                if (el.type === 'color') {
+                    var txt = $('[data-path-text="' + path + '"]');
+                    if (txt && txt.value) {
+                        var norm = txt.value.trim().replace(/[^#0-9a-fA-F]/g, '');
+                        if (/^#[0-9a-fA-F]{6}$/.test(norm)) { setPath(content, path, norm.toLowerCase()); return; }
+                    }
+                }
+            }
+            setPath(content, path, v);
         });
         $$('#tabBody .list-editor').forEach(function (el) {
             var def = findListDef(el.dataset.listpath);

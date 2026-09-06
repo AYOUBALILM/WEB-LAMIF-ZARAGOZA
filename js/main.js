@@ -51,6 +51,102 @@
         return (path || []).reduce(function (o, k) { return (o && o[k] !== undefined) ? o[k] : undefined; }, obj) || def;
     }
 
+    // ============================================================
+    // TEMA (colores, fuentes y animaciones desde el panel)
+    // ============================================================
+    const FONT_SAFE = {
+        "'Bebas Neue'": { stack: "'Bebas Neue', 'Arial Narrow', sans-serif", gf: 'Bebas+Neue' },
+        "'Oswald'": { stack: "'Oswald', 'Arial Narrow', sans-serif", gf: 'Oswald:wght@400;600;700' },
+        "'Anton'": { stack: "'Anton', 'Arial Narrow', sans-serif', sans-serif", gf: 'Anton' },
+        "'Playfair Display'": { stack: "'Playfair Display', Georgia, serif", gf: 'Playfair+Display:wght@700;800' },
+        "'Montserrat'": { stack: "'Montserrat', sans-serif", gf: 'Montserrat:wght@700;800;900' },
+        "'Poppins'": { stack: "'Poppins', sans-serif", gf: 'Poppins:wght@700;800' },
+        "'Raleway'": { stack: "'Raleway', sans-serif", gf: 'Raleway:wght@700;900' }
+    };
+    const BODY_SAFE = {
+        "'Inter'": { stack: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", gf: 'Inter:wght@400;600;700' },
+        "'Montserrat'": { stack: "'Montserrat', -apple-system, sans-serif", gf: 'Montserrat:wght@400;600;700' },
+        "'Poppins'": { stack: "'Poppins', -apple-system, sans-serif", gf: 'Poppins:wght@400;500;600' },
+        "'Open Sans'": { stack: "'Open Sans', -apple-system, sans-serif", gf: 'Open+Sans:wght@400;600;700' },
+        "'Raleway'": { stack: "'Raleway', -apple-system, sans-serif", gf: 'Raleway:wght@400;600;700' },
+        "'Nunito Sans'": { stack: "'Nunito Sans', -apple-system, sans-serif", gf: 'Nunito+Sans:wght@400;700' }
+    };
+    const FONT_LINKED = {};
+
+    function hexToRgb(hex) {
+        var s = String(hex || '').trim().replace(/^#/, '');
+        if (s.length !== 6) return null;
+        var n = parseInt(s, 16);
+        if (isNaN(n)) return null;
+        return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+    }
+
+    function injectFont(family) {
+        if (!family || FONT_LINKED[family]) return;
+        var key = family.replace(/^['"]|['"]$/g, '');
+        var safe = (FONT_SAFE[family] || BODY_SAFE[family]);
+        if (!safe) return;
+        FONT_LINKED[family] = true;
+        if (!document.querySelector('link[data-theme-font="1"]')) {
+            var pre = document.createElement('link');
+            pre.rel = 'preconnect';
+            pre.href = 'https://fonts.googleapis.com';
+            document.head.appendChild(pre);
+            pre = document.createElement('link');
+            pre.rel = 'preconnect';
+            pre.href = 'https://fonts.gstatic.com';
+            pre.crossOrigin = 'anonymous';
+            document.head.appendChild(pre);
+        }
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        if (link.dataset) link.dataset.themeFont = '1';
+        link.href = 'https://fonts.googleapis.com/css2?family=' + (safe.gf || key.replace(/ /g, '+')) + '&display=swap';
+        document.head.appendChild(link);
+    }
+
+    function applyTheme(t) {
+        if (!t) t = {};
+        var c = t.colors || {};
+        var f = t.fonts || {};
+        var a = t.animations || {};
+        var root = document.documentElement;
+
+        var colorMap = [
+            ['brand', '--brand'], ['brandDark', '--brand-600'], ['brandLight', '--brand-400'],
+            ['bg', '--ink'], ['bg2', '--ink-2'], ['surface', '--ink-3'],
+            ['text', '--text'], ['muted', '--muted'], ['accent', '--halal'],
+            ['paper', '--paper'], ['paperText', '--ink-text']
+        ];
+        colorMap.forEach(function (pair) {
+            if (c[pair[0]]) root.style.setProperty(pair[1], c[pair[0]]);
+        });
+        if (c.brand) {
+            var rgb = hexToRgb(c.brand);
+            if (rgb) {
+                root.style.setProperty('--brand-ghost', 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.12)');
+                root.style.setProperty('--brand-glow', 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.35)');
+            }
+        }
+
+        if (f.heading) {
+            var hs = (FONT_SAFE[f.heading] && FONT_SAFE[f.heading].stack) || f.heading;
+            root.style.setProperty('--font-display', hs);
+            if (FONT_SAFE[f.heading]) injectFont(f.heading);
+        }
+        if (f.body) {
+            var bs = (BODY_SAFE[f.body] && BODY_SAFE[f.body].stack) || f.body;
+            root.style.setProperty('--font-body', bs);
+            if (BODY_SAFE[f.body]) injectFont(f.body);
+        }
+
+        var motion = (a.reveal !== false);
+        root.classList.toggle('animate-off', !motion);
+        var marquee = (a.marquee !== false);
+        root.classList.toggle('marquee-off', !marquee);
+        root.classList.toggle('hover-off', a.hover === false);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
         const $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
@@ -888,16 +984,30 @@
         // CARGA DEL CONTENIDO REMOTO (panel de administración)
         // ============================================================
         function fetchRemote() {
-            if (location.protocol === 'file:') { renderAll(); return; }
-            fetch('/api/content', { headers: { 'Accept': 'application/json' } })
-                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-                .then(function (data) {
-                    if (data && data.general) { content = data; renderAll(); }
-                })
-                .catch(function () { /* usa los valores por defecto */ });
+            if (location.protocol === 'file:') { applyTheme(content.tema); renderAll(); return; }
+
+            var GITHUB_RAW = 'https://raw.githubusercontent.com/AYOUBALILM/WEB-LAMIF-ZARAGOZA/main/data/content.json';
+            var urls = ['/api/content', GITHUB_RAW];
+            var idx = 0;
+
+            function attempt() {
+                if (idx >= urls.length) return;
+                var u = urls[idx++];
+                var ctrl = new AbortController();
+                var timer = setTimeout(function () { ctrl.abort(); }, 4000);
+                fetch(u, { headers: { 'Accept': 'application/json' }, signal: ctrl.signal })
+                    .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                    .then(function (data) {
+                        if (data && data.general) { content = data; applyTheme(content.tema); renderAll(); }
+                        else { attempt(); }
+                    })
+                    .catch(function () { clearTimeout(timer); attempt(); });
+            }
+            attempt();
         }
 
         // Render inmediato con los datos locales + actualización remota
+        applyTheme(content.tema);
         renderAll();
         fetchRemote();
     });
