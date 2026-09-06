@@ -776,17 +776,17 @@
   ],
   "tema": {
     "colors": {
-      "brand": "#ff7a00",
-      "brandDark": "#e85f00",
-      "brandLight": "#ffa14d",
-      "bg": "#0c0b09",
-      "bg2": "#14110e",
-      "surface": "#1c1814",
-      "text": "#f5f0e7",
-      "muted": "#a89f90",
-      "accent": "#2fbf71",
-      "paper": "#fbf7f0",
-      "paperText": "#1c1913"
+      "brand": "#1fbf62",
+      "brandDark": "#16a34a",
+      "brandLight": "#5fd68d",
+      "bg": "#0a120c",
+      "bg2": "#0f1a12",
+      "surface": "#14241a",
+      "text": "#eefcf2",
+      "muted": "#8fb39b",
+      "accent": "#ffb020",
+      "paper": "#f3fff6",
+      "paperText": "#0d2416"
     },
     "fonts": {
       "heading": "'Bebas Neue'",
