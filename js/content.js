@@ -18,7 +18,7 @@ window.LaMIF_CONTENT = {
         instagram: 'https://www.instagram.com/la_mif_barca',
         tiktok: 'https://www.tiktok.com/@lamifbarca',
         ubereats: 'https://www.ubereats.com/es/store/lamif/bZj4UCxXREijnpVIEXkyRA?diningMode=DELIVERY&surfaceName=',
-        glovo: 'https://kaspi.glovoapp.com/es/es/zaragoza/stores/la-mif-z',
+        glovo: 'https://kaspi.glovoapp.com/es/es/zaragoza/stores/la-mif-zar',
         mapsUrl: 'https://maps.app.goo.gl/LBhanTJts5r28ktu8?g_st=ic',
         mapsAppleUrl: 'https://maps.apple.com/?ll=41.6488,-0.8808&q=La%20Mif',
         wazeUrl: 'https://waze.com/ul?ll=41.6488,-0.8808&navigate=yes',

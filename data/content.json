@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "general": {
     "nombre": "La Mif",
     "lema": "Burgers · Tacos franceses · Sandwiches",
@@ -11,7 +11,7 @@
     "instagram": "https://www.instagram.com/la_mif_barca",
     "tiktok": "https://www.tiktok.com/@lamifbarca",
     "ubereats": "https://www.ubereats.com/es/store/lamif/bZj4UCxXREijnpVIEXkyRA?diningMode=DELIVERY&surfaceName=",
-    "glovo": "https://kaspi.glovoapp.com/es/es/zaragoza/stores/la-mif-z",
+    "glovo": "https://kaspi.glovoapp.com/es/es/zaragoza/stores/la-mif-zar",
     "mapsUrl": "https://maps.app.goo.gl/LBhanTJts5r28ktu8?g_st=ic",
     "mapsAppleUrl": "https://maps.apple.com/?ll=41.6488,-0.8808&q=La%20Mif",
     "wazeUrl": "https://waze.com/ul?ll=41.6488,-0.8808&navigate=yes",
@@ -22,7 +22,8 @@
     "precioHasta": "20",
     "rating": "5,0",
     "reseñas": "50",
-    "halalPct": "100"
+    "halalPct": "100",
+    "version": 4
   },
   "seo": {
     "titulo": "La MIF Zaragoza | Hamburguesas, Tacos Franceses y Comida Halal",
