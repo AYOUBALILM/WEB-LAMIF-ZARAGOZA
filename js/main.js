@@ -217,7 +217,7 @@
             if (heroImg) { setPictureSrc(heroImg, h.imagen || dh.imagen); if (h.imagenAlt) heroImg.alt = h.imagenAlt; }
 
             const title = $('#heroTitle');
-            if (title) title.innerHTML = escapeHtml(h.titulo1 || dh.titulo1 || 'LA') + ' <em>' + escapeHtml(h.tituloEm || dh.tituloEm || 'MIF') + '</em>';
+            if (title) title.innerHTML = '<span class="la">' + escapeHtml((h.titulo1 || dh.titulo1 || 'la').toLowerCase()) + '</span><em>' + escapeHtml(h.tituloEm || dh.tituloEm || 'MIF') + '</em>';
 
             const subtitle = $('#heroSubtitle');
             if (subtitle) subtitle.textContent = h.subtitulo || h.tagline || dh.subtitulo || dh.tagline || 'Sabores que conquistan';

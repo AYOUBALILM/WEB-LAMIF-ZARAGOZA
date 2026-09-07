@@ -125,6 +125,10 @@ button { font-family: inherit; }
     line-height: 1;
 }
 .loader-mark em { font-style: normal; color: var(--brand); }
+.loader-mark .la { font-size: 0.4em; color: inherit; }
+.brand-name { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.02em; }
+.brand-name em { font-style: normal; color: var(--brand); }
+.brand-name .la { font-size: 0.4em; color: inherit; }
 .loader-line {
     display: block;
     width: 0;
@@ -390,13 +394,26 @@ button { font-family: inherit; }
     letter-spacing: 0.015em;
     color: var(--text);
     margin-bottom: 0.15rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.12em;
+}
+.hero-title .la {
+    font-size: 0.38em;
+    color: var(--text);
+    font-style: normal;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+    line-height: 1.4;
 }
 .hero-title em {
     font-style: normal;
-    background: linear-gradient(100deg, var(--brand-400), var(--brand));
+    background: linear-gradient(100deg, #f5c842 0%, #ffb833 30%, #ff8c1a 65%, var(--brand) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    font-weight: 700;
 }
 .hero-subtitle {
     font-family: var(--font-display);
