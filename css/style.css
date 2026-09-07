@@ -387,33 +387,12 @@ button { font-family: inherit; }
 }
 
 .hero-title {
-    font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 0.88;
-    font-size: clamp(4.6rem, 13vw, 10.8rem);
-    letter-spacing: 0.015em;
-    color: var(--text);
     margin-bottom: 0.15rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0 0.12em;
 }
-.hero-title .la {
-    font-size: 0.38em;
-    color: var(--text);
-    font-style: normal;
-    letter-spacing: 0.04em;
-    align-self: flex-start;
-    line-height: 1.4;
-}
-.hero-title em {
-    font-style: normal;
-    background: linear-gradient(100deg, var(--hero-grad-start, #f5c842) 0%, var(--brand-400, #ffa14d) 40%, var(--brand) 70%, var(--hero-grad-end, #ff8c1a) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 700;
+.hero-title-img {
+    max-width: min(520px, 80vw);
+    height: auto;
+    display: block;
 }
 .hero-subtitle {
     font-family: var(--font-display);
@@ -1882,7 +1861,7 @@ section { position: relative; }
 
 @media (max-width: 480px) {
     .brand { font-size: 1.6rem; }
-    .hero-title { font-size: clamp(4rem, 19vw, 6rem); }
+    .hero-title-img { max-width: min(400px, 75vw); }
     .hero-cta .btn { width: 100%; }
     .reviews-big-score { font-size: 5rem; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
@@ -1958,7 +1937,7 @@ section { position: relative; }
 
     .hero-trust { gap: 0.45rem; margin-bottom: 0.95rem; }
     .pill { font-size: 0.72rem; padding: 0.4rem 0.82rem; }
-    .hero-title { font-size: clamp(4rem, 18vw, 6.5rem); margin-bottom: 0.15rem; }
+    .hero-title-img { max-width: min(420px, 78vw); } 
     .hero-subtitle { font-size: clamp(1.5rem, 5vw, 2.2rem); margin-bottom: 0.6rem; }
     .hero-kicker { font-size: 0.78rem; letter-spacing: 0.1em; margin-bottom: 1.1rem; }
     .hero-tagline { font-size: 0.93rem; line-height: 1.55; max-width: 100%; margin-bottom: 1.15rem; }
@@ -2160,7 +2139,7 @@ section { position: relative; }
 /* Muy estrechas (320–400px): afinado fino */
 @media (max-width: 400px) {
     .hero { min-height: 82svh; }
-    .hero-title { font-size: clamp(3.3rem, 16vw, 5rem); }
+    .hero-title-img { max-width: min(320px, 70vw); }
     .hero-kicker { font-size: 0.95rem; }
     .hero-tagline { font-size: 0.87rem; margin-bottom: 0.95rem; }
     .hero-inner { padding-top: calc(var(--header-h) + env(safe-area-inset-top) + 0.4rem); padding-bottom: 1.75rem; }
