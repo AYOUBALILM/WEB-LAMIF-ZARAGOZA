@@ -409,7 +409,7 @@ button { font-family: inherit; }
 }
 .hero-title em {
     font-style: normal;
-    background: linear-gradient(100deg, #f5c842 0%, #ffb833 30%, #ff8c1a 65%, var(--brand) 100%);
+    background: linear-gradient(100deg, var(--hero-grad-start, #f5c842) 0%, var(--brand-light, #ffa14d) 40%, var(--brand) 70%, var(--hero-grad-end, #ff8c1a) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

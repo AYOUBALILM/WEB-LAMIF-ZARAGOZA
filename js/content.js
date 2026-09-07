@@ -231,7 +231,9 @@ window.LaMIF_CONTENT = {
             muted: '#a89f90',       // texto secundario
             accent: '#2fbf71',      // sello HALAL y positivos
             paper: '#fbf7f0',       // secciones claras
-            paperText: '#1c1913'    // texto sobre fondo claro
+            paperText: '#1c1913',    // texto sobre fondo claro
+            heroGradStart: '#f5c842', // degradado título — inicio (izquierda)
+            heroGradEnd: '#ff8c1a'    // degradado título — final (derecha)
         },
         fonts: {
             heading: "'Bebas Neue'",

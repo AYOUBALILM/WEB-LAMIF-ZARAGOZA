@@ -57,23 +57,23 @@
     var THEME_PRESETS = [
         {
             label: 'Naranja La Mif (actual)',
-            colors: { brand: '#ff7a00', brandDark: '#e85f00', brandLight: '#ffa14d', bg: '#0c0b09', bg2: '#14110e', surface: '#1c1814', text: '#f5f0e7', muted: '#a89f90', accent: '#2fbf71', paper: '#fbf7f0', paperText: '#1c1913' }
+            colors: { brand: '#ff7a00', brandDark: '#e85f00', brandLight: '#ffa14d', bg: '#0c0b09', bg2: '#14110e', surface: '#1c1814', text: '#f5f0e7', muted: '#a89f90', accent: '#2fbf71', paper: '#fbf7f0', paperText: '#1c1913', heroGradStart: '#f5c842', heroGradEnd: '#ff8c1a' }
         },
         {
             label: 'Rojo fuego 🔥',
-            colors: { brand: '#ff3b30', brandDark: '#d92d23', brandLight: '#ff6b61', bg: '#120c0b', bg2: '#1a1210', surface: '#241813', text: '#fdeee8', muted: '#b39a8e', accent: '#58d68d', paper: '#fff5ef', paperText: '#24100a' }
+            colors: { brand: '#ff3b30', brandDark: '#d92d23', brandLight: '#ff6b61', bg: '#120c0b', bg2: '#1a1210', surface: '#241813', text: '#fdeee8', muted: '#b39a8e', accent: '#58d68d', paper: '#fff5ef', paperText: '#24100a', heroGradStart: '#ff6b3b', heroGradEnd: '#d92d23' }
         },
         {
             label: 'Verde halal 🌿',
-            colors: { brand: '#1fbf62', brandDark: '#16a34a', brandLight: '#5fd68d', bg: '#0a120c', bg2: '#0f1a12', surface: '#14241a', text: '#eefcf2', muted: '#8fb39b', accent: '#ffb020', paper: '#f3fff6', paperText: '#0d2416' }
+            colors: { brand: '#1fbf62', brandDark: '#16a34a', brandLight: '#5fd68d', bg: '#0a120c', bg2: '#0f1a12', surface: '#14241a', text: '#eefcf2', muted: '#8fb39b', accent: '#ffb020', paper: '#f3fff6', paperText: '#0d2416', heroGradStart: '#a8e063', heroGradEnd: '#16a34a' }
         },
         {
             label: 'Dorado premium ✨',
-            colors: { brand: '#d4a017', brandDark: '#b8860b', brandLight: '#f0c04a', bg: '#12100c', bg2: '#1a1712', surface: '#262014', text: '#faf5e8', muted: '#b6a98c', accent: '#c25e2a', paper: '#fdf8ec', paperText: '#231a08' }
+            colors: { brand: '#d4a017', brandDark: '#b8860b', brandLight: '#f0c04a', bg: '#12100c', bg2: '#1a1712', surface: '#262014', text: '#faf5e8', muted: '#b6a98c', accent: '#c25e2a', paper: '#fdf8ec', paperText: '#231a08', heroGradStart: '#f5e27a', heroGradEnd: '#b8860b' }
         },
         {
             label: 'Azul noche 🌙',
-            colors: { brand: '#3b82f6', brandDark: '#2563eb', brandLight: '#7cb3ff', bg: '#0a0e1a', bg2: '#101623', surface: '#1a2233', text: '#eef3ff', muted: '#93a1bd', accent: '#22d3ee', paper: '#f2f6ff', paperText: '#101a30' }
+            colors: { brand: '#3b82f6', brandDark: '#2563eb', brandLight: '#7cb3ff', bg: '#0a0e1a', bg2: '#101623', surface: '#1a2233', text: '#eef3ff', muted: '#93a1bd', accent: '#22d3ee', paper: '#f2f6ff', paperText: '#101a30', heroGradStart: '#7cb3ff', heroGradEnd: '#2563eb' }
         },
         {
             label: 'Vino elegante 🍷',
@@ -117,6 +117,8 @@
                 C(['accent', 'Sello HALAL y positivos']),
                 C(['paper', 'Fondo de secciones claras']),
                 C(['paperText', 'Texto sobre fondo claro']),
+                { label: 'Degradado del título — inicio', path: 'tema.colors.heroGradStart', type: 'color', hint: 'Color izquierdo del degradado "la MIF".' },
+                { label: 'Degradado del título — final', path: 'tema.colors.heroGradEnd', type: 'color', hint: 'Color derecho del degradado "la MIF".' },
                 { label: 'Fuente de los títulos', path: 'tema.fonts.heading', type: 'select', options: HEADING_FONTS },
                 { label: 'Fuente del texto', path: 'tema.fonts.body', type: 'select', options: BODY_FONTS },
                 { label: 'Animación al hacer scroll', path: 'tema.animations.reveal', type: 'checkbox', hint: 'Los bloques aparecen suavemente al desplazarte.' },

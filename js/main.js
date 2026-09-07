@@ -128,6 +128,8 @@
                 root.style.setProperty('--brand-glow', 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.35)');
             }
         }
+        if (c.heroGradStart) root.style.setProperty('--hero-grad-start', c.heroGradStart);
+        if (c.heroGradEnd) root.style.setProperty('--hero-grad-end', c.heroGradEnd);
 
         if (f.heading) {
             var hs = (FONT_SAFE[f.heading] && FONT_SAFE[f.heading].stack) || f.heading;
